@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #f8f9fa;
+      font-family: Arial;
+    }
+    textarea, #output {
+      width: 80%;
+      max-width: 600px;
+      height: 150px;
+      padding: 15px;
+      margin: 10px 0;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+    button {
+      padding: 12px 25px;
+      background: #6c5ce7;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h2>Paste your long text:</h2>
+  <textarea id="inputText" placeholder="The quick brown fox..."></textarea>
+  <button id="summarizeBtn">Summarize with AI</button>
+  <h3>Summary:</h3>
+  <div id="output"></div>
+  <script>
+    document.getElementById('summarizeBtn').addEventListener('click', async () => {
+      const text = document.getElementById('inputText').value;
+      if (!text) return;
+      
+      // Mock AI summary (in reality, use an API like Hugging Face)
+      document.getElementById('output').textContent = 
+        "AI Summary: " + text.split(' ').slice(0, 10).join(' ') + "... [mock demo]";
+      
+      /* Real implementation would use:
+      const response = await fetch('AI_API_ENDPOINT', {
+        method: 'POST',
+        body: JSON.stringify({ text })
+      });
+      const summary = await response.json();
+      */
+    });
+  </script>
+</body>
+</html>
+<!--Day 28: AI-Powered Text Summarizer (Trending: ChatGPT Alternatives)
+Day 28: AI-Powered Text Summarizer (Trending: ChatGPT Alternatives)
+"Turn essays into 1 SENTENCE with AI! ✨ (API demo)"-->
+
+
+

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Mask Animation</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #000;
+            overflow: hidden;
+        }
+        .text-container {
+            position: relative;
+        }
+        h1 {
+            font-size: 8rem;
+            font-family: Arial;
+            font-weight: bold;
+            color: transparent;
+            background: linear-gradient(90deg, #ff6b6b, #48dbfb, #1dd1a1, #feca57);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            animation: gradient 8s ease infinite;
+            position: relative;
+            z-index: 1;
+        }
+        .mask {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986') center/cover;
+            clip-path: polygon(
+                0% 0%, 100% 0%, 100% 100%, 0% 100%,
+                0% 0%, 20% 60%, 50% 20%, 80% 60%, 100% 0%,
+                100% 100%, 80% 40%, 50% 80%, 20% 40%, 0% 100%
+            );
+            animation: mask 8s ease infinite;
+            mix-blend-mode: screen;
+        }
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        @keyframes mask {
+            0%, 100% { clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%); }
+            50% { clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 0%, 20% 60%, 50% 20%, 80% 60%, 100% 0%, 100% 100%, 80% 40%, 50% 80%, 20% 40%, 0% 100%); }
+        }
+    </style>
+</head>
+<body>
+    <div class="text-container">
+        <h1>CSS</h1>
+        <div class="mask"></div>
+    </div>
+</body>
+</html>
+<!--📅 Day 25: Animated Gradient Text Mask (CSS Clip-Path)
+Title: "Text Mask Animation That Will BLOW Your Mind! 💥 #CSS"
+📌 Description:
+"Create this insane text mask animation with CSS clip-path! Perfect for hero sections. Want more CSS magic? Hit ❤️! #CSS #Animation #WebDesign"
+
+🏷️ Tags:
+#CSS #ClipPath #TextEffects #Animation #Frontend

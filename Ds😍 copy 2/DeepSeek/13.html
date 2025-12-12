@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Cube</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #000;
+            perspective: 1000px;
+        }
+        .cube {
+            width: 200px;
+            height: 200px;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: rotate 10s infinite linear;
+        }
+        .face {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            border: 2px solid white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: Arial;
+            font-size: 2rem;
+            color: white;
+            opacity: 0.8;
+        }
+        .front { transform: translateZ(100px); background: #ff6b6b; }
+        .back { transform: rotateY(180deg) translateZ(100px); background: #48dbfb; }
+        .right { transform: rotateY(90deg) translateZ(100px); background: #1dd1a1; }
+        .left { transform: rotateY(-90deg) translateZ(100px); background: #feca57; }
+        .top { transform: rotateX(90deg) translateZ(100px); background: #5f27cd; }
+        .bottom { transform: rotateX(-90deg) translateZ(100px); background: #ff9ff3; }
+        
+        @keyframes rotate {
+            0% { transform: rotateX(0) rotateY(0); }
+            100% { transform: rotateX(360deg) rotateY(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="cube">
+        <div class="face front">FRONT</div>
+        <div class="face back">BACK</div>
+        <div class="face right">RIGHT</div>
+        <div class="face left">LEFT</div>
+        <div class="face top">TOP</div>
+        <div class="face bottom">BOTTOM</div>
+    </div>
+</body>
+</html>
+<!--📅 Day 14: 3D Cube Rotation (CSS 3D Transforms)
+Title: "3D Cube Rotation in Pure CSS! (No JS) 🔲 #CSS3"
+📌 Description:
+"Create a 3D rotating cube with pure CSS—no JavaScript needed! Perfect for portfolios. Like & Subscribe for more CSS 3D magic! #CSS3 #WebDesign"
+
+🏷️ Tags:
+#3D #CSS #NoJS #WebDesign #Frontend #CreativeCSS

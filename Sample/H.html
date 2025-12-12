@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>3D Holographic Display</title>
+  <style>
+    body { 
+      margin: 0; 
+      height: 100vh; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      background: #000; 
+      overflow: hidden;
+    }
+    .hologram {
+      position: relative;
+      width: 300px;
+      height: 300px;
+      transform-style: preserve-3d;
+      animation: rotate 15s infinite linear;
+    }
+    .face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border: 2px solid rgba(0, 255, 255, 0.6);
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: Arial;
+      color: cyan;
+      backface-visibility: visible;
+    }
+    .front { transform: translateZ(150px); }
+    .back { transform: rotateY(180deg) translateZ(150px); }
+    .right { transform: rotateY(90deg) translateZ(150px); }
+    .left { transform: rotateY(-90deg) translateZ(150px); }
+    .top { transform: rotateX(90deg) translateZ(150px); }
+    .bottom { transform: rotateX(-90deg) translateZ(150px); }
+    
+    @keyframes rotate {
+      from { transform: rotateX(-20deg) rotateY(0deg); }
+      to { transform: rotateX(-20deg) rotateY(360deg); }
+    }
+    
+    .glow {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at center, rgba(0, 255, 255, 0.2), transparent 70%);
+      border-radius: 50%;
+      filter: blur(20px);
+    }
+  </style>
+</head>
+<body>
+  <div class="hologram">
+    <div class="glow"></div>
+    <div class="face front">FRONT</div>
+    <div class="face back">BACK</div>
+    <div class="face right">RIGHT</div>
+    <div class="face left">LEFT</div>
+    <div class="face top">TOP</div>
+    <div class="face bottom">BOTTOM</div>
+  </div>
+
+  <script>
+    // Add mouse parallax effect
+    const hologram = document.querySelector('.hologram');
+    document.addEventListener('mousemove', (e) => {
+      const x = (e.clientX / window.innerWidth) * 40 - 20;
+      const y = (e.clientY / window.innerHeight) * 40 - 20;
+      hologram.style.transform = `rotateX(${-20 + y}deg) rotateY(${x}deg)`;
+    });
+  </script>
+</body>
+</html>

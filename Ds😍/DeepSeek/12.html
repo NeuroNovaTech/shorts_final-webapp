@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #000;
+      font-family: sans-serif;
+    }
+
+    .gallery {
+      display: flex;
+      gap: 10px;
+    }
+
+    .image {
+      width: 80px;
+      height: 250px;
+      border-radius: 20px;
+      background-size: cover;
+      background-position: center;
+      transition: width 0.5s ease;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .image:hover {
+      width: 300px;
+    }
+
+    /* Fallback for mobile – show first image expanded */
+    @media (hover: none) and (pointer: coarse) {
+      .image:first-child {
+        width: 300px;
+      }
+    }
+
+    .image:nth-child(1) { background-image: url('1.jpg'); }
+    .image:nth-child(2) { background-image: url('2.jpg'); }
+    .image:nth-child(3) { background-image: url('3.jpg'); }
+    .image:nth-child(4) { background-image: url('4.jpg'); }
+  </style>
+</head>
+<body>
+  <div class="gallery">
+    <div class="image"></div>
+    <div class="image"></div>
+    <div class="image"></div>
+    <div class="image"></div>
+  </div>
+</body>
+</html>
+
+<!--Day 12: Hover-Only Gallery
+(Trending: No-Touch Mobile Interactions)
+
+"Hover to ZOOM! 🌄 (No JavaScript needed)"
+

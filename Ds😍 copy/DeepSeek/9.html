@@ -1,0 +1,140 @@
+<!-- Day 13: Stylish Todo List with Delete -->
+<div class="todo-container">
+  <h2>📝 Todo List</h2>
+  <div class="input-group">
+    <input id="todoInput" placeholder="Add a task...">
+    <button id="addTodo">Add</button>
+  </div>
+  <ul id="todoList"></ul>
+</div>
+
+<script>
+  document.getElementById('addTodo').addEventListener('click', () => {
+    const input = document.getElementById('todoInput');
+    if (input.value.trim()) {
+      const li = document.createElement('li');
+      li.classList.add('todo-item');
+
+      // Task text container
+      const taskText = document.createElement('span');
+      taskText.textContent = input.value;
+      taskText.addEventListener('click', () => {
+        taskText.classList.toggle('done');
+      });
+
+      // Delete button
+      const delBtn = document.createElement('button');
+      delBtn.textContent = '🗑️';
+      delBtn.classList.add('delete-btn');
+      delBtn.addEventListener('click', () => {
+        li.classList.add('remove');
+        setTimeout(() => li.remove(), 300);
+      });
+
+      li.appendChild(taskText);
+      li.appendChild(delBtn);
+      document.getElementById('todoList').appendChild(li);
+      input.value = '';
+    }
+  });
+</script>
+
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: #fff;
+  }
+
+  .todo-container {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 30px;
+    border-radius: 20px;
+    backdrop-filter: blur(15px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    width: 320px;
+    text-align: center;
+  }
+
+  .todo-container h2 {
+    margin-bottom: 20px;
+    font-weight: 600;
+  }
+
+  .input-group {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  input#todoInput {
+    flex: 1;
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+  }
+
+  button#addTodo {
+    padding: 10px 15px;
+    border: none;
+    background: #6c5ce7;
+    color: white;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+
+  button#addTodo:hover {
+    background: #a29bfe;
+  }
+
+  #todoList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .todo-item {
+    background: rgba(255, 255, 255, 0.08);
+    margin: 8px 0;
+    padding: 10px 15px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+  }
+
+  .todo-item .done {
+    text-decoration: line-through;
+    color: #00ffb3;
+  }
+
+  .todo-item.remove {
+    opacity: 0;
+    transform: translateX(100px);
+  }
+
+  .delete-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    color: #ff6b6b;
+    transition: color 0.3s;
+  }
+
+  .delete-btn:hover {
+    color: #ff3b3b;
+  }
+</style>
+<!---->

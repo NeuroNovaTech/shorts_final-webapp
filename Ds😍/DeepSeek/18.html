@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #0f0f0f;
+    }
+    .gradient-box {
+      width: 200px;
+      height: 200px;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+    .gradient-box::before {
+      content: '';
+      position: absolute;
+      width: 110%;
+      height: 110%;
+      background: linear-gradient(45deg, 
+        #ff0000, #ff7300, #fffb00, #48ff00, 
+        #00ffd5, #002bff, #7a00ff, #ff00c8);
+      background-size: 400% 400%;
+      z-index: -1;
+      border-radius: 10px;
+      animation: gradient 3s ease infinite;
+    }
+    .gradient-box::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: #0f0f0f;
+      z-index: -1;
+      border-radius: 8px;
+    }
+    @keyframes gradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="gradient-box">HOVER ME</div>
+</body>
+</html>
+<!--Day 18: Animated Gradient Border
+(Trending: Gradient Design Trends)
+
+"Border that RAINBOWS on its own! 🌈 (No JS)"
+

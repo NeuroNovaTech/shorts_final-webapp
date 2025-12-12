@@ -1,0 +1,40 @@
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<div id="dataviz"></div>
+<script>
+  const data = Array(10).fill().map((_,i) => ({
+    id: i,
+    value: Math.random() * 100
+  }));
+
+  const svg = d3.select("#dataviz")
+    .append("svg")
+    .attr("width", 300)
+    .attr("height", 200);
+
+  svg.selectAll("rect")
+    .data(data)
+    .enter()
+    .append("rect")
+    .attr("x", (d,i) => i * 30)
+    .attr("y", d => 200 - d.value * 2)
+    .attr("width", 25)
+    .attr("height", d => d.value * 2)
+    .attr("fill", (d,i) => d3.interpolateRainbow(i/10));
+
+  // Animate random updates
+  setInterval(() => {
+    data.forEach(d => d.value = Math.random() * 100);
+    svg.selectAll("rect")
+      .data(data)
+      .transition()
+      .duration(500)
+      .attr("y", d => 200 - d.value * 2)
+      .attr("height", d => d.value * 2);
+  }, 1000);
+</script>
+<style>
+  *{background-color: black;}
+</style>
+<!--🔥 Day 17: Real-Time Data Visualization (D3.js)
+📌 Hook: *"Beautiful data viz in JavaScript - no libraries needed! 📊 #D3js #DataScience"*
+

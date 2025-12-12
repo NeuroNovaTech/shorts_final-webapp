@@ -1,0 +1,101 @@
+<div class="floating-card" id="floatingCard">
+  <div class="layer layer-bg"></div>
+  <div class="layer layer-mid"></div>
+  <div class="layer layer-front">
+    <h2>Hover Me!</h2>
+  </div>
+</div>
+
+<script>
+  const card = document.getElementById('floatingCard');
+  const layers = card.querySelectorAll('.layer');
+
+  card.addEventListener('mousemove', (e) => {
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+
+    layers.forEach((layer, i) => {
+      const depth = (i + 1) * 10; // 10, 20, 30px depth
+      const moveX = -x / (20 / (i + 1));
+      const moveY = -y / (20 / (i + 1));
+      layer.style.transform = `translate3d(${moveX}px, ${moveY}px, 0)`;
+    });
+
+    card.style.transform = 'scale(1.07)';
+  });
+
+  card.addEventListener('mouseleave', () => {
+    layers.forEach(layer => {
+      layer.style.transform = 'translate3d(0, 0, 0)';
+    });
+    card.style.transform = 'scale(1)';
+  });
+</script>
+
+<style>
+  /* Center the card */
+  body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #000000;
+  }
+
+  .floating-card {
+    position: relative;
+    width: 320px;
+    height: 220px;
+    perspective: 800px;
+    border-radius: 20px;
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow:
+      0 0 30px #8a2be2aa,
+      inset 0 0 60px #a84fff;
+    background: #1e0f3f;
+    user-select: none;
+    transition: transform 0.4s ease;
+  }
+
+  .layer {
+    position: absolute;
+    border-radius: 20px;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    transition: transform 0.15s ease;
+  }
+
+  .layer-bg {
+    background: linear-gradient(135deg, #6a00ff, #35006a);
+    filter: brightness(0.8);
+  }
+
+  .layer-mid {
+    background: linear-gradient(135deg, #b366ff, #7e33ff);
+    mix-blend-mode: screen;
+    filter: blur(6px);
+  }
+
+  .layer-front {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-shadow: 0 0 10px #b366ff;
+    pointer-events: none;
+    z-index: 10;
+  }
+</style>
+
+<!--Day 1: 3D Parallax Card (CSS + JS)
+📌 Hook: "This 3D card effect is INSANE! 🤯 #CSS #JavaScript"
+

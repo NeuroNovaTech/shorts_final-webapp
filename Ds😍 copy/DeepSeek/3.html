@@ -1,0 +1,58 @@
+<!-- Day 4: Text Typing Animation -->
+<div class="typing">
+  <span class="keyword">const</span> 
+  <span class="variable">code</span> 
+  = 
+  <span class="string">"Awesome!"</span><span class="cursor">|</span>
+</div>
+  
+<style>
+  body {
+    background: #000000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    color: #fff;
+    font-family: 'Fira Code', monospace;
+  }
+
+  .typing {
+    font-size: 1.8rem;
+    white-space: nowrap;
+    overflow: hidden;
+    display: inline-block;
+    border-right: none;
+    animation: typing 3.5s steps(30, end) forwards;
+  }
+
+  .cursor {
+    display: inline-block;
+    animation: blink 0.7s steps(1) infinite;
+    color: #00ffea;
+    margin-left: 4px;
+  }
+
+  /* Syntax-like colors */
+  .keyword {
+    color: #ff7edb;
+  }
+
+  .variable {
+    color: #ffd700;
+  }
+
+  .string {
+    color: #7fff00;
+  }
+
+  @keyframes typing {
+    from { width: 0 }
+    to { width: 100% }
+  }
+
+  @keyframes blink {
+    50% { opacity: 0; }
+  }
+</style>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      transition: background 0.3s;
+      font-family: Arial;
+    }
+    button {
+      padding: 15px 30px;
+      font-size: 1.2rem;
+      background: #4285f4;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+    .hint {
+      color: white;
+      text-shadow: 0 0 5px rgba(0,0,0,0.5);
+    }
+  </style>
+</head>
+<body id="body">
+  <button id="micBtn">🎤 Click & Say a Color!</button>
+  <p class="hint">Try: "red", "blue", "green", etc.</p>
+  <script>
+    const body = document.getElementById('body');
+    const micBtn = document.getElementById('micBtn');
+    
+    micBtn.addEventListener('click', () => {
+      const recognition = new webkitSpeechRecognition();
+      recognition.lang = 'en-US';
+      
+      recognition.onresult = (event) => {
+        const color = event.results[0][0].transcript.toLowerCase().trim();
+        body.style.background = color;
+        micBtn.textContent = `You said: ${color}!`;
+        setTimeout(() => micBtn.textContent = '🎤 Click & Say a Color!', 2000);
+      };
+      
+      recognition.start();
+    });
+  </script>
+</body>
+</html>
+<!--Day 22: Voice-Activated Color Changer (Trending: Voice UI/Web Speech API)
+
+Hook Overlay:
+"Change colors WITH YOUR VOICE! 🎤 (No libraries)"
+Pro Tip: Use Chrome (best Web Speech API support) and say CSS color names ("coral", "purple").-->
+

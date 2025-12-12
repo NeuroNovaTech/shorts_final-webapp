@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #000000;
+      overflow: hidden;
+    } 
+    
+    .text-pop {
+      font-size: 2rem;
+      font-weight: 800;
+      background: linear-gradient(45deg, #f72585, #4cc9f0);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: popIn 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    
+    @keyframes popIn {
+      0% { transform: scale(0.2); opacity: 0; }
+      70% { transform: scale(1.1); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <h1 class="text-pop">FRONTEND MAGIC ✨</h1>
+</body>
+</html>

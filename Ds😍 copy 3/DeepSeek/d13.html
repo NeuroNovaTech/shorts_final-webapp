@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diwali Day 6: Phoenix Firebird</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #000;
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        
+        .container {
+            text-align: center;
+            z-index: 10;
+            position: relative;
+        }
+        
+        h1 {
+            color: #FF4081;
+            text-shadow: 0 0 10px #F50057;
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+        }
+        
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        
+        .message {
+            color: #F8BBD0;
+            font-size: 1.5rem;
+            margin-top: 20px;
+            text-shadow: 0 0 5px #F50057;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Diwali Day 6: Phoenix Firebird</h1>
+        <p class="message">A mythical phoenix rising from the flames</p>
+    </div>
+    
+    <canvas id="fireworks"></canvas>
+
+    <script>
+        const canvas = document.getElementById('fireworks');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        let particles = [];
+        const colors = ['#FF4081', '#F50057', '#F8BBD0', '#EC407A', '#AD1457'];
+        
+        class Particle {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.size = Math.random() * 4 + 2;
+                this.speedX = Math.random() * 2 - 1;
+                this.speedY = Math.random() * -3 - 2;
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+                this.alpha = 1;
+                this.decay = Math.random() * 0.005 + 0.005;
+                this.oscillation = 0;
+                this.oscillationSpeed = Math.random() * 0.1 + 0.05;
+            }
+            
+            update() {
+                this.x += this.speedX + Math.sin(this.oscillation) * 1.5;
+                this.y += this.speedY;
+                this.oscillation += this.oscillationSpeed;
+                this.alpha -= this.decay;
+                
+                if (this.y < -50) {
+                    this.alpha = 0;
+                }
+            }
+            
+            draw() {
+                ctx.globalAlpha = this.alpha;
+                ctx.beginPath();
+                
+                // Draw phoenix shape
+                ctx.moveTo(this.x, this.y);
+                ctx.lineTo(this.x - this.size, this.y + this.size * 2);
+                ctx.lineTo(this.x + this.size, this.y + this.size * 2);
+                ctx.closePath();
+                
+                ctx.fillStyle = this.color;
+                ctx.fill();
+                
+                ctx.globalAlpha = 1;
+            }
+        }
+        
+        function createPhoenix() {
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height + 50;
+            
+            for (let i = 0; i < 50; i++) {
+                particles.push(new Particle(centerX, centerY));
+            }
+        }
+        
+        function animate() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            if (Math.random() < 0.02) {
+                createPhoenix();
+            }
+            
+            particles.forEach((particle, index) => {
+                particle.update();
+                particle.draw();
+                
+                if (particle.alpha <= 0) {
+                    particles.splice(index, 1);
+                }
+            });
+            
+            requestAnimationFrame(animate);
+        }
+        
+        animate();
+        
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>

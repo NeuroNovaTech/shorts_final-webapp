@@ -1,0 +1,105 @@
+<div id="chat">
+  <input id="message" placeholder="Type a message..." autocomplete="off" />
+  <button id="send">Send</button>
+  <div id="messages"></div>
+</div>
+
+<script src="https://cdn.socket.io/4.5.0/socket.io.min.js"></script>
+<script>
+  const socket = io('https://socket-io-demo-server.glitch.me');
+  const messages = document.getElementById('messages');
+  const input = document.getElementById('message');
+  const sendBtn = document.getElementById('send');
+
+  function addMessage(sender, msg) {
+    // Escape HTML characters
+    const escapedMsg = msg.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    const div = document.createElement('div');
+    div.textContent = `${sender}: ${escapedMsg}`;
+    messages.appendChild(div);
+    messages.scrollTop = messages.scrollHeight; // Auto-scroll
+  }
+
+  sendBtn.addEventListener('click', () => {
+    const message = input.value.trim();
+    if (message === '') return;
+    socket.emit('message', message);
+    addMessage('You', message);
+    input.value = '';
+    input.focus();
+  });
+
+  // Send message on Enter key
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      sendBtn.click();
+    }
+  });
+
+  socket.on('message', (msg) => {
+    addMessage('Other', msg);
+  });
+</script>
+
+<style>
+  *{
+    background-color: black;
+  }
+  #chat {
+    width: 320px;
+    margin: 20px auto;
+    font-family: Arial, sans-serif;
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+  }
+  #message {
+    width: calc(100% - 60px);
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+  }
+  #send {
+    width: 50px;
+    padding: 10px;
+    margin-left: 5px;
+    background-color: #4a00e0;
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  #send:hover {
+    background-color: #7a3bff;
+  }
+  #messages {
+    margin-top: 15px;
+    height: 200px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    padding: 10px;
+    background: white;
+    border-radius: 5px;
+  }
+  #messages div {
+    margin-bottom: 10px;
+    padding: 5px 8px;
+    border-radius: 6px;
+    background: #e0e0e0;
+    word-wrap: break-word;
+  }
+  #messages div:nth-child(odd) {
+    background: #d1c4e9;
+  }
+</style>
+
+<!--🔥 Day 12: WebSocket Real-Time Chat UI
+(A simple live chat demo with Socket.io)
+
+📌 Hook: *"Build a REAL-TIME chat app in under 5 minutes! 💬 #WebSockets"*-->
+

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #000;
+      font-family: 'Arial', sans-serif;
+    }
+    .clock {
+      font-size: 5rem;
+      font-weight: bold;
+      background: linear-gradient(45deg, #ff8a00, #e52e71, #2575fc);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 0 0 20px rgba(255,255,255,0.1);
+    }
+  </style>
+</head>
+<body>
+  <div class="clock" id="clock"></div>
+  <script>
+    function updateClock() {
+      const now = new Date();
+      const time = now.toLocaleTimeString('en-US', { hour12: false });
+      document.getElementById('clock').textContent = time;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+  </script>
+</body>
+</html>
+
+<!--Day 11: Gradient Clock
+(Trending: Minimalist Productivity Tools)
+
+"Your clock just got a MAJOR upgrade! ⏰ (CSS Gradient Hack)"
+

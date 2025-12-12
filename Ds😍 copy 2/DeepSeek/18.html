@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Color Picker</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            font-family: Arial;
+            background: #000;
+            color: white;
+        }
+        #imageUpload {
+            margin-bottom: 20px;
+        }
+        #colorDisplay {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-top: 20px;
+            box-shadow: 0 5px 15px rgba(252, 251, 251, 0.2);
+        }
+        #colorCode {
+            margin-top: 10px;
+            font-weight: bold;
+            color: white;
+        }
+        canvas {
+            border: 2px solid #333;
+            max-width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <input type="file" id="imageUpload" accept="image/*">
+    <canvas id="imageCanvas"></canvas>
+    <div id="colorDisplay"></div>
+    <div id="colorCode">#FFFFFF</div>
+
+    <script>
+        const canvas = document.getElementById('imageCanvas');
+        const ctx = canvas.getContext('2d');
+        const colorDisplay = document.getElementById('colorDisplay');
+        const colorCode = document.getElementById('colorCode');
+        const imageUpload = document.getElementById('imageUpload');
+
+        imageUpload.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const img = new Image();
+                img.onload = () => {
+                    // Set canvas dimensions to image size (max 500px for demo)
+                    const maxWidth = 500;
+                    const ratio = maxWidth / img.width;
+                    canvas.width = maxWidth;
+                    canvas.height = img.height * ratio;
+                    
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                };
+                img.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+
+        canvas.addEventListener('click', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const pixel = ctx.getImageData(x, y, 1, 1).data;
+            const hex = `#${pixel[0].toString(16).padStart(2, '0')}${pixel[1].toString(16).padStart(2, '0')}${pixel[2].toString(16).padStart(2, '0')}`;
+            
+            colorDisplay.style.backgroundColor = hex;
+            colorCode.textContent = hex;
+        });
+    </script>
+</body>
+</html>
+<!--📅 Day 24: Real-Time Image Color Picker (Canvas API)
+Title: "Build a Photoshop-Style Eyedropper Tool! 🎨 #JavaScript"
+📌 Description:
+"Build a Photoshop-style color picker with JavaScript's Canvas API! Extract colors from any image. Want more creative coding? Subscribe! #JavaScript #CanvasAPI"
+
+🏷️ Tags:
+#ColorPicker #Canvas #JavaScript #WebDev #CreativeCoding

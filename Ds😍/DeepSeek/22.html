@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #000000;
+      font-family: Arial;
+    }
+    .ai-box { 
+      width: 80%;
+      max-width: 600px;
+      background: #444654;
+      padding: 20px;
+      border-radius: 10px;
+      color: white;
+      line-height: 1.6;
+    }
+    .cursor {
+      display: inline-block;
+      width: 8px;
+      height: 20px;
+      background: white;
+      animation: blink 0.7s infinite;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="ai-box" id="message"></div>
+  <script>
+    const text = "Here's how to simulate ChatGPT's typing effect in JavaScript. First, we break the text into chunks...";
+    const message = document.getElementById('message');
+    let i = 0;
+    
+    function typeWriter() {
+      if (i < text.length) {
+        message.innerHTML = text.substring(0, i) + '<span class="cursor"></span>';
+        i++;
+        setTimeout(typeWriter, Math.random() * 50 + 20); // Random speed
+      } else {
+        message.innerHTML = text; // Remove cursor when done
+      }
+    }
+    typeWriter();
+  </script>
+</body>
+</html>
+
+<!--Day 23: ChatGPT-Like Streaming Text (Trending: AI UI Patterns)
+
+"FAKE an AI response like ChatGPT! 🤖 (JS trick)"
+

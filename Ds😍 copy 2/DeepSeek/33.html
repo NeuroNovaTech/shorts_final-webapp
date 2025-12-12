@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Infinite Fractal Zoom</title>
+  <style>
+    body { margin: 0; overflow: hidden; background: #000; }
+    canvas { display: block; }
+  </style>
+</head>
+<body>
+  <canvas id="fractal"></canvas>
+
+  <script>
+    const canvas = document.getElementById('fractal');
+    const ctx = canvas.getContext('2d');
+    
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    
+    let centerX = -0.5;
+    let centerY = 0;
+    let scale = 1;
+    const maxIterations = 100;
+    let hueOffset = 0;
+    
+    function drawMandelbrot() {
+      const width = canvas.width;
+      const height = canvas.height;
+      const imageData = ctx.createImageData(width, height);
+      const data = imageData.data;
+      
+      for (let x = 0; x < width; x++) {
+        for (let y = 0; y < height; y++) {
+          const cx = (x - width / 2) / (0.25 * scale * width) + centerX;
+          const cy = (y - height / 2) / (0.25 * scale * height) + centerY;
+          
+          let zx = 0;
+          let zy = 0;
+          let iter = 0;
+          
+          while (zx * zx + zy * zy < 4 && iter < maxIterations) {
+            const tmp = zx * zx - zy * zy + cx;
+            zy = 2 * zx * zy + cy;
+            zx = tmp;
+            iter++;
+          }
+          
+          const idx = (x + y * width) * 4;
+          
+          if (iter === maxIterations) {
+            data[idx] = 0;
+            data[idx + 1] = 0;
+            data[idx + 2] = 0;
+          } else {
+            const hue = (iter / maxIterations * 360 + hueOffset) % 360;
+            const rgb = hslToRgb(hue / 360, 1, iter / maxIterations * 0.7);
+            data[idx] = rgb[0];
+            data[idx + 1] = rgb[1];
+            data[idx + 2] = rgb[2];
+          }
+          data[idx + 3] = 255;
+        }
+      }
+      
+      ctx.putImageData(imageData, 0, 0);
+    }
+    
+    function hslToRgb(h, s, l) {
+      let r, g, b;
+      
+      if (s === 0) {
+        r = g = b = l;
+      } else {
+        const hue2rgb = (p, q, t) => {
+          if (t < 0) t += 1;
+          if (t > 1) t -= 1;
+          if (t < 1/6) return p + (q - p) * 6 * t;
+          if (t < 1/2) return q;
+          if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+          return p;
+        };
+        
+        const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+        const p = 2 * l - q;
+        
+        r = hue2rgb(p, q, h + 1/3);
+        g = hue2rgb(p, q, h);
+        b = hue2rgb(p, q, h - 1/3);
+      }
+      
+      return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+    }
+    
+    function animate() {
+      scale *= 1.01;
+      hueOffset += 0.5;
+      
+      if (scale > 1e10) {
+        scale = 1;
+      }
+      
+      drawMandelbrot();
+      requestAnimationFrame(animate);
+    }
+    
+    animate();
+    
+    canvas.addEventListener('click', (e) => {
+      centerX = (e.clientX - canvas.width / 2) / (0.25 * scale * canvas.width) + centerX;
+      centerY = (e.clientY - canvas.height / 2) / (0.25 * scale * canvas.height) + centerY;
+      scale = 1;
+    });
+  </script>
+</body>
+</html>
+<!--Day 5: Infinite Zooming Fractal (Canvas + Mathematical Art)
+Effect: Zoom infinitely into a Mandelbrot fractal with psychedelic colors.
+

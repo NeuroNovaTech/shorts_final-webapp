@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #000000;
+    }
+
+    #puzzle {
+      width: 300px;
+      height: 300px;
+      border: 2px dashed #333;
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    .piece {
+      width: 100px;
+      height: 100px;
+      box-sizing: border-box;
+      background-image: url('logo.PNG');
+      background-size: 300px 300px;
+      cursor: grab;
+    }
+  </style>
+</head>
+<body>
+  <div id="puzzle"></div>
+
+  <script>
+    const puzzle = document.getElementById('puzzle');
+
+    // Create and shuffle array of positions
+    const positions = [];
+    for (let i = 0; i < 9; i++) {
+      positions.push(i);
+    }
+    positions.sort(() => Math.random() - 0.5);
+
+    // Create puzzle pieces
+    for (let i = 0; i < 9; i++) {
+      const piece = document.createElement('div');
+      piece.className = 'piece';
+      piece.setAttribute('data-index', positions[i]); // Save original image position
+      piece.setAttribute('draggable', true);
+      piece.style.backgroundPosition = `${-(positions[i] % 3) * 100}px ${-Math.floor(positions[i] / 3) * 100}px`;
+
+      // Drag start
+      piece.addEventListener('dragstart', (e) => {
+        e.dataTransfer.setData('text/plain', e.target.dataset.index);
+        e.dataTransfer.setData('text/id', e.target.id);
+        e.dataTransfer.effectAllowed = 'move';
+        e.target.classList.add('dragging');
+      });
+
+      piece.addEventListener('dragend', (e) => {
+        e.target.classList.remove('dragging');
+      });
+
+      puzzle.appendChild(piece);
+    }
+
+    // Handle drop
+    let draggedElement = null;
+
+    puzzle.addEventListener('dragstart', (e) => {
+      if (e.target.classList.contains('piece')) {
+        draggedElement = e.target;
+      }
+    });
+
+    puzzle.addEventListener('dragover', (e) => {
+      e.preventDefault();
+    });
+
+    puzzle.addEventListener('drop', (e) => {
+      e.preventDefault();
+      const target = e.target;
+      if (target && target.classList.contains('piece') && draggedElement !== target) {
+        // Swap backgroundPosition
+        const tempPosition = draggedElement.style.backgroundPosition;
+        draggedElement.style.backgroundPosition = target.style.backgroundPosition;
+        target.style.backgroundPosition = tempPosition;
+
+        // Optional: Swap data-index if you want to check correctness later
+        const tempIndex = draggedElement.dataset.index;
+        draggedElement.dataset.index = target.dataset.index;
+        target.dataset.index = tempIndex;
+      }
+    });
+  </script>
+</body>
+</html>
+
+<!--Day 9: Drag & Drop Puzzle
+(Trending: Interactive Games in JS)
+
+(Trending: Interactive Games in JS)
+
+"Build a DRAGGABLE puzzle in 1 minute! 🧩 (Perfect for portfolios)"</-->
+

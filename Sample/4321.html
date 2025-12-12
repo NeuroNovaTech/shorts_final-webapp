@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>3D Car Driving — Three.js</title>
+  <style>
+    html,body { height:100%; margin:0; background: #87CEEB; overflow:hidden; font-family: Arial, sans-serif; }
+    #canvas-container{ width:100%; height:100%; position:relative; }
+    #loading { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(10,10,10,0.6); color:#fff; z-index:5; font-size:18px; }
+    #hint { position: absolute; left:12px; bottom:12px; color:#fff; z-index:6; font-size:13px; text-shadow:0 2px 6px rgba(0,0,0,0.6) }
+    button#start { position:absolute; right:12px; bottom:12px; z-index:6; padding:8px 12px; font-size:14px; }
+  </style>
+</head>
+<body>
+  <div id="canvas-container">
+    <div id="loading">Loading model and scene…</div>
+    <div id="hint">Drive forward demo — camera follows car</div>
+    <button id="start">Start / Restart</button>
+  </div>
+
+  <!-- Three.js UMD -->
+  <script src="https://unpkg.com/three@0.158.0/build/three.min.js"></script>
+  <script src="https://unpkg.com/three@0.158.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://unpkg.com/three@0.158.0/examples/js/loaders/GLTFLoader.js"></script>
+
+  <script>
+  (function(){
+    const container = document.getElementById('canvas-container');
+    const loadingEl = document.getElementById('loading');
+    const startBtn = document.getElementById('start');
+
+    // Renderer, scene, camera
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x9fc7ff); // soft sky
+
+    const camera = new THREE.PerspectiveCamera(50, window.innerWidth/window.innerHeight, 0.1, 2000);
+    camera.position.set(0, 4.5, -9);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    container.appendChild(renderer.domElement);
+
+    // Controls (for debug view)
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enabled = false; // keep disabled during cinematic follow; enable for debugging with controls.enabled = true;
+
+    // Lights
+    const hemi = new THREE.HemisphereLight(0xffffee, 0x444466, 0.6);
+    scene.add(hemi);
+
+    const sun = new THREE.DirectionalLight(0xffffff, 1.0);
+    sun.position.set(10, 20, 10);
+    sun.castShadow = true;
+    sun.shadow.camera.left = -30; sun.shadow.camera.right = 30;
+    sun.shadow.camera.top = 30; sun.shadow.camera.bottom = -30;
+    sun.shadow.mapSize.set(2048, 2048);
+    scene.add(sun);
+
+    // Ground + road
+    const groundMat = new THREE.MeshStandardMaterial({ color: 0x2b6b2b, roughness: 0.9 });
+    const groundGeo = new THREE.PlaneGeometry(1000, 1000);
+    const ground = new THREE.Mesh(groundGeo, groundMat);
+    ground.rotation.x = -Math.PI/2;
+    ground.position.y = -0.01;
+    ground.receiveShadow = true;
+    scene.add(ground);
+
+    // Road surface (long strip with moving texture)
+    const roadTex = generateRoadTexture(); // custom canvas texture
+    roadTex.wrapS = roadTex.wrapT = THREE.RepeatWrapping;
+    roadTex.repeat.set(1, 40); // repeat along road length
+
+    const roadMat = new THREE.MeshStandardMaterial({ map: roadTex });
+    const roadGeo = new THREE.PlaneGeometry(8, 800, 1, 1);
+    const road = new THREE.Mesh(roadGeo, roadMat);
+    road.rotation.x = -Math.PI/2;
+    road.position.y = 0.001;
+    road.position.z = 400/2 - 20; // center the long road forward
+    road.receiveShadow = true;
+    scene.add(road);
+
+    // Road center dashed line (separate mesh for easier motion)
+    const laneGeo = new THREE.PlaneGeometry(0.25, 800);
+    const laneMat = new THREE.MeshBasicMaterial({ color:0xffffff });
+    const lane = new THREE.Mesh(laneGeo, laneMat);
+    lane.rotation.x = -Math.PI/2;
+    lane.position.y = 0.002;
+    lane.position.z = road.position.z;
+    scene.add(lane);
+
+    // Car container
+    const carGroup = new THREE.Group();
+    carGroup.position.set(0, 0, 0);
+    scene.add(carGroup);
+
+    // Placeholder for wheels to animate
+    let wheelCandidates = []; // will be filled after model load
+
+    // Speed parameters
+    let speed = 0.08;        // units per frame (tweak)
+    const maxSpeed = 0.18;
+    const accel = 0.002;
+    let running = false;
+
+    // GLTF loader
+    const loader = new THREE.GLTFLoader();
+
+    // Public sample model (Khronos) — reasonably small, vehicle/ truck
+    // If CORS causes issues, run a local server (python -m http.server or npx http-server)
+    const MODEL_URL = 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/CesiumMilkTruck/glTF-Binary/CesiumMilkTruck.glb';
+
+    loader.load(MODEL_URL,
+      function(gltf){
+        const model = gltf.scene;
+        // Adjust orientation & scale for a driving demo
+        model.traverse((node) => {
+          if (node.isMesh) {
+            node.castShadow = true;
+            node.receiveShadow = true;
+          }
+        });
+
+        // Some models come large — scale to fit scene
+        model.scale.setScalar(0.6);
+        model.rotation.y = Math.PI; // face +Z direction
+        model.position.y = 0.1;
+
+        // add small pivot to keep wheels rotation independent if needed
+        carGroup.add(model);
+
+        // try to detect wheels (simple heuristic: look for mesh names containing 'wheel' or 'tyre')
+        const wheels = [];
+        model.traverse((n) => {
+          if (n.isMesh && /wheel|tyre|tyre/i.test(n.name)) {
+            wheels.push(n);
+          }
+        });
+
+        // fallback: if no named wheels found, find small circular-ish meshes near the bottom
+        if (wheels.length === 0) {
+          model.traverse((n) => {
+            if (n.isMesh) {
+              const bbox = new THREE.Box3().setFromObject(n);
+              const size = new THREE.Vector3(); bbox.getSize(size);
+              // heuristic: smallish in diameter and near ground
+              if (size.x < 1.4 && size.y < 1.4 && size.z < 1.4 && bbox.min.y < 0.5) wheels.push(n);
+            }
+          });
+        }
+
+        wheelCandidates = wheels;
+        loadingEl.style.display = 'none';
+        start(); // start the animation automatically once model loaded
+      },
+      function(progress){
+        const p = (progress.loaded / progress.total * 100).toFixed(0);
+        loadingEl.innerText = `Loading model and scene… ${p}%`;
+      },
+      function(err){
+        console.error('GLTF load error:', err);
+        loadingEl.innerHTML = 'Failed to load model. <br>Try running a local server or check console for CORS errors.';
+      }
+    );
+
+    // generate road texture using canvas (asphalt + lane marks)
+    function generateRoadTexture(){
+      const cw = 512, ch = 512;
+      const c = document.createElement('canvas');
+      c.width = cw; c.height = ch;
+      const ctx = c.getContext('2d');
+
+      // asphalt base
+      ctx.fillStyle = '#383838';
+      ctx.fillRect(0,0,cw,ch);
+
+      // add noise
+      for(let i=0;i<3000;i++){
+        const x = Math.random()*cw, y = Math.random()*ch;
+        ctx.fillStyle = 'rgba(255,255,255,' + (Math.random()*0.03) + ')';
+        ctx.fillRect(x,y,1,1);
+      }
+
+      // dashed center (vertical stripe in texture space)
+      ctx.fillStyle = '#ffffff';
+      const stripeW = cw * 0.05;
+      const stripeX = cw/2 - stripeW/2;
+      // create repeating dashes
+      for(let y=0;y<ch;y+=60){
+        ctx.fillRect(stripeX, y + 8, stripeW, 32);
+      }
+
+      const tex = new THREE.CanvasTexture(c);
+      tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+      tex.repeat.set(1,1);
+      return tex;
+    }
+
+    // Cinematic camera follow variables
+    const followOffset = new THREE.Vector3(0, 3.6, -9); // camera offset relative to car in car space
+    const cameraLerp = 0.06; // smoothing
+
+    // Animation loop
+    let lastTime = performance.now();
+    function animate(time){
+      requestAnimationFrame(animate);
+      const dt = (time - lastTime) / 16.6667; // ~ frames ratio
+      lastTime = time;
+
+      if (running) {
+        // move car forward along +Z in world space
+        carGroup.position.z += speed * dt * 1.0;
+
+        // cap speed gently
+        speed = Math.min(maxSpeed, speed + accel * 0.02);
+
+        // rotate wheels if any
+        if (wheelCandidates && wheelCandidates.length) {
+          const wheelSpin = - (speed * 0.5) * dt; // spin proportional to speed
+          wheelCandidates.forEach(w => {
+            // rotate around local X or Z depending orientation; many models have horizontal axis along X
+            w.rotateX(wheelSpin);
+          });
+        }
+
+        // animate road texture offset to simulate movement (repeat Y)
+        road.material.map.offset.y -= speed * 0.12 * dt;
+        road.material.map.needsUpdate = true;
+        lane.position.z = carGroup.position.z + 400; // keep lane centered in front
+      }
+
+      // Smooth camera follow: desired = car position + rotated offset
+      const desiredPos = new THREE.Vector3().copy(carGroup.position).add(followOffset);
+      // For cinematic feel, make camera look slightly ahead of car
+      const lookAtPos = new THREE.Vector3().copy(carGroup.position).add(new THREE.Vector3(0,1.2, 12));
+
+      // lerp camera position
+      camera.position.lerp(desiredPos, cameraLerp);
+      camera.lookAt(lookAtPos);
+
+      // render
+      renderer.render(scene, camera);
+    }
+
+    // Start/restart function
+    function start(){
+      // reset if already running
+      carGroup.position.set(0,0,0);
+      speed = 0.08;
+      running = true;
+    }
+
+    startBtn.addEventListener('click', () => {
+      // restart drive from origin
+      start();
+    });
+
+    // Resize handler
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth/window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    // Kick animation loop
+    animate(performance.now());
+
+  })();
+  </script>
+</body>
+</html>

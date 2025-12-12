@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>Aurora Wave — Happy New Year</title>
+<style>
+  :root{
+    --bg-dark:#030517;
+    --glass: rgba(255,255,255,0.03);
+    --accent1:#6ff7e2;
+    --accent2:#7a6bff;
+    --accent3:#ff89d6;
+    --muted: rgba(255,255,255,0.9);
+  }
+  html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;background:linear-gradient(180deg,#02020a,var(--bg-dark)); color:white; -webkit-font-smoothing:antialiased}
+  .screen{
+    width:100%;
+    height:100vh;
+    position:relative;
+    overflow:hidden;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:6% 4%;
+    box-sizing:border-box;
+  }
+
+  /* layered decorative waves */
+  .wave {
+    position:absolute;
+    left:-10%;
+    width:120%;
+    height:56%;
+    bottom:20%;
+    filter: blur(40px) saturate(120%);
+    transform: rotate(-6deg);
+    opacity:0.9;
+    pointer-events:none;
+    z-index:0;
+  }
+  .wave.wave2{ bottom:10%; height:50%; transform: rotate(-3deg); filter: blur(56px) saturate(140%); opacity:0.75 }
+  .wave.wave3{ bottom:28%; height:40%; transform: rotate(-8deg); filter: blur(28px); opacity:0.45 }
+
+  .center{
+    position:relative;
+    z-index:3;
+    width:100%;
+    max-width:760px;
+    text-align:center;
+    transform: translateY(-6vh);
+  }
+
+  .headline{
+    font-weight:800;
+    font-size: clamp(32px, 9.6vw, 84px);
+    letter-spacing:0.02em;
+    line-height:0.95;
+    color: white;
+    margin:0;
+    transition: transform 360ms cubic-bezier(.2,.9,.3,1), filter 360ms;
+    text-shadow: 0 8px 40px rgba(20,20,30,0.6);
+  }
+
+  .ribbon{
+    margin-top:10px;
+    display:inline-block;
+    padding:10px 16px;
+    border-radius:999px;
+    background: linear-gradient(90deg, rgba(255,255,255,0.03), rgba(0,0,0,0.06));
+    box-shadow: 0 8px 30px rgba(5,8,20,0.6);
+    color: var(--muted);
+    font-size:14px;
+    backdrop-filter: blur(6px);
+  }
+
+  .sub{ margin-top:12px; font-size:14px; color:rgba(255,255,255,0.88) }
+
+  /* confetti canvas */
+  canvas.conf{ position:absolute; inset:0; z-index:5; pointer-events:none; }
+
+  /* bokeh layer (particles) */
+  canvas.bokeh{ position:absolute; inset:0; z-index:1; pointer-events:none; }
+
+  .hint{ position:absolute; bottom:18px; left:50%; transform:translateX(-50%); z-index:6; font-size:12px; padding:8px 12px; border-radius:999px; background:rgba(0,0,0,0.28); color:#fff; backdrop-filter:blur(6px) }
+
+  @media (max-width:520px){
+    .headline{ font-size: clamp(28px, 14vw, 72px); }
+  }
+</style>
+</head>
+<body>
+<div class="screen" id="screen">
+  <!-- decorative SVG waves for aurora gradient -->
+  <svg class="wave" viewBox="0 0 1000 300" preserveAspectRatio="none" aria-hidden="true">
+    <defs>
+      <linearGradient id="g1" x1="0" x2="1">
+        <stop offset="0" stop-color="#4fffe0" stop-opacity="0.9"/>
+        <stop offset="0.5" stop-color="#7a6bff" stop-opacity="0.8"/>
+        <stop offset="1" stop-color="#ff89d6" stop-opacity="0.6"/>
+      </linearGradient>
+    </defs>
+    <path d="M0,160 C180,220 340,60 520,120 C700,180 840,80 1000,140 L1000,300 L0,300 Z" fill="url(#g1)"></path>
+  </svg>
+
+  <svg class="wave wave2" viewBox="0 0 1000 300" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0,120 C160,60 320,220 520,150 C720,80 860,200 1000,140 L1000,300 L0,300 Z" fill="rgba(120,80,255,0.16)"></path>
+  </svg>
+
+  <svg class="wave wave3" viewBox="0 0 1000 300" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0,180 C160,120 360,150 520,140 C680,130 820,180 1000,120 L1000,300 L0,300 Z" fill="rgba(100,230,200,0.08)"></path>
+  </svg>
+
+  <canvas class="bokeh" id="bokeh"></canvas>
+  <canvas class="conf" id="confetti"></canvas>
+
+  <div class="center">
+    <h1 class="headline" id="title">Happy New Year</h1>
+    <div id="year" class="headline" style="font-size:clamp(22px,6.8vw,64px); color:#dfeeff; margin-top:6px; font-weight:900">2026</div>
+    <div class="ribbon" id="ribbon">Wishing you calm nights & bright mornings</div>
+    <div class="sub">Tap to pulse the aurora ✨</div>
+  </div>
+
+  <div class="hint">Tap or press 'A' for a big reveal</div>
+</div>
+
+<script>
+/* Aurora Wave Reveal
+  Features:
+  - animated bokeh/particles moving slowly like northern lights
+  - SVG aurora waves (static but pretty)
+  - tap / key 'A' triggers a pulse scale + confetti radial burst
+  - change year by editing #year text
+*/
+
+// Setup canvases sizing for high-DPI
+const bokeh = document.getElementById('bokeh');
+const conf = document.getElementById('confetti');
+const DPR = Math.max(1, window.devicePixelRatio || 1);
+
+function resizeCanvas(c){
+  c.width = c.offsetWidth * DPR;
+  c.height = c.offsetHeight * DPR;
+  c.getContext('2d').setTransform(DPR,0,0,DPR,0,0);
+}
+function onResize(){ resizeCanvas(bokeh); resizeCanvas(conf); }
+onResize(); window.addEventListener('resize', onResize);
+
+// Bokeh particles (soft glowing circles)
+const bCtx = bokeh.getContext('2d');
+let BW = bokeh.width / DPR, BH = bokeh.height / DPR;
+let boks = [];
+for(let i=0;i<45;i++){
+  boks.push({
+    x: Math.random()*BW,
+    y: Math.random()*BH,
+    r: Math.random()*40 + 8,
+    vx: (Math.random()-0.5)*0.15,
+    vy: (Math.random()-0.5)*0.06,
+    hue: Math.random()
+  });
+}
+
+function drawBokeh(){
+  BW = bokeh.width / DPR; BH = bokeh.height / DPR;
+  bCtx.clearRect(0,0,BW,BH);
+  // subtle vignette
+  const g = bCtx.createRadialGradient(BW*0.8, BH*0.2, 10, BW/2, BH/2, Math.max(BW,BH)*1.1);
+  g.addColorStop(0, 'rgba(255,255,255,0.02)');
+  g.addColorStop(1, 'rgba(0,0,0,0.4)');
+  bCtx.fillStyle = g; bCtx.fillRect(0,0,BW,BH);
+
+  for(let p of boks){
+    p.x += p.vx; p.y += p.vy;
+    // wrap
+    if(p.x < -80) p.x = BW + 80;
+    if(p.x > BW + 80) p.x = -80;
+    if(p.y < -80) p.y = BH + 80;
+    if(p.y > BH + 80) p.y = -80;
+
+    const grd = bCtx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r*2.4);
+    // hue blend between accents
+    const hueColor = p.hue < 0.5 ? `rgba(110,247,226,` : `rgba(122,107,255,`;
+    const alpha = 0.12 + Math.abs(Math.sin(Date.now()/2000 + p.hue*10))*0.08;
+    grd.addColorStop(0, `${hueColor}${alpha})`);
+    grd.addColorStop(0.6, `${hueColor}${alpha*0.25})`);
+    grd.addColorStop(1, 'rgba(0,0,0,0)');
+    bCtx.fillStyle = grd;
+    bCtx.beginPath();
+    bCtx.arc(p.x, p.y, p.r*1.4, 0, Math.PI*2);
+    bCtx.fill();
+  }
+  requestAnimationFrame(drawBokeh);
+}
+drawBokeh();
+
+// Confetti simple pieces (radial burst)
+const cCtx = conf.getContext('2d');
+let pieces = [];
+function emitConfetti(x,y,n=120){
+  const W = conf.width / DPR, H = conf.height / DPR;
+  for(let i=0;i<n;i++){
+    const ang = Math.random()*Math.PI*2;
+    const speed = Math.random()*6 + 3;
+    pieces.push({
+      x: x || W/2 + (Math.random()-0.5)*80,
+      y: y || H/2 + (Math.random()-0.5)*40,
+      vx: Math.cos(ang)*speed,
+      vy: Math.sin(ang)*speed - Math.random()*6,
+      w: Math.random()*10+6,
+      h: Math.random()*4+4,
+      rot: Math.random()*360,
+      vr: (Math.random()-0.5)*6,
+      col: (Math.random()<0.5) ? ['#6ff7e2','#7a6bff','#ff89d6'][Math.floor(Math.random()*3)] : ['#fff1a8','#ffd6ef','#bfefff'][Math.floor(Math.random()*3)],
+      life: Math.random()*120 + 60
+    });
+  }
+  if(!confAnim) runConfetti();
+}
+
+let confAnim = false;
+function runConfetti(){
+  confAnim = true;
+  let last = performance.now();
+  (function frame(now){
+    const dt = Math.min(2, (now-last)/16); last = now;
+    const W = conf.width / DPR, H = conf.height / DPR;
+    cCtx.clearRect(0,0,W,H);
+    for(let i=pieces.length-1;i>=0;i--){
+      const p = pieces[i];
+      p.vy += 0.35 * dt; p.vx *= 0.995;
+      p.x += p.vx * dt; p.y += p.vy * dt; p.rot += p.vr * dt; p.life -= dt;
+      cCtx.save();
+      cCtx.translate(p.x, p.y);
+      cCtx.rotate(p.rot * Math.PI / 180);
+      cCtx.fillStyle = p.col;
+      cCtx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+      cCtx.restore();
+      if(p.y > H + 40 || p.life <= 0) pieces.splice(i,1);
+    }
+    if(pieces.length) requestAnimationFrame(frame);
+    else confAnim = false;
+  })(performance.now());
+}
+
+// pulse animation for the headline
+const title = document.getElementById('title');
+const year = document.getElementById('year');
+const ribbon = document.getElementById('ribbon');
+function pulseReveal(){
+  title.style.transition = 'transform 420ms cubic-bezier(.2,.9,.3,1), filter 420ms';
+  title.style.transform = 'scale(1.06) translateY(-6px)';
+  title.style.filter = 'brightness(1.12) saturate(1.04)';
+  year.style.transform = 'scale(1.02)';
+  ribbon.style.transform = 'translateY(-4px)';
+  setTimeout(()=> {
+    title.style.transform = '';
+    year.style.transform = '';
+    ribbon.style.transform = '';
+  }, 900);
+}
+
+// interaction - tap to trigger
+const screen = document.getElementById('screen');
+screen.addEventListener('pointerdown', (e)=>{
+  const rect = conf.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+  pulseReveal();
+  emitConfetti(x * DPR, y * DPR, 140);
+});
+
+// allow keyboard 'a' to trigger
+document.addEventListener('keydown', (ev)=>{
+  if(ev.key.toLowerCase() === 'a'){ pulseReveal(); emitConfetti(null,null,140); }
+});
+
+// responsive: if canvas size changes, particles stay within
+window.addEventListener('resize', ()=>{
+  // re-seed bokeh positions proportionally
+  resizeCanvas(bokeh); resizeCanvas(conf);
+  BW = bokeh.width / DPR; BH = bokeh.height / DPR;
+  for(let p of boks){ p.x = Math.random()*BW; p.y = Math.random()*BH; }
+});
+
+</script>
+</body>
+</html>

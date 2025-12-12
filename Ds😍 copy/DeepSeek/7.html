@@ -1,0 +1,77 @@
+<!-- Day 8: Dark Mode Toggle -->
+<!-- Day 8: Unique Dark Mode Toggle -->
+<button id="darkToggle" class="toggle-btn">
+  <span class="icon">🌞</span>
+</button>
+
+<script>
+  const toggle = document.getElementById('darkToggle');
+  const icon = toggle.querySelector('.icon');
+
+  toggle.addEventListener('click', () => {
+    document.body.classList.toggle('dark-mode');
+    icon.textContent = document.body.classList.contains('dark-mode') ? '🌙' : '🌞';
+  });
+</script>
+
+<style>
+  /* Base Styles */
+  body {
+    margin: 0;
+    height: 100vh;
+    background: #f4f4f4;
+    color: #333;
+    font-family: 'Segoe UI', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background 0.5s, color 0.5s;
+  }
+
+  /* Dark Mode */
+  .dark-mode {
+    background: #121212;
+    color: #fff;
+  }
+
+  /* Toggle Button */
+  .toggle-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    font-size: 2rem;
+    color: #ffffff;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    transition: all 0.4s ease;
+    outline: none;
+  }
+
+  .toggle-btn:hover {
+    box-shadow: 0 0 15px #4a00e0, 0 0 30px #00f5ff;
+    transform: scale(1.05);
+  }
+
+  .toggle-btn:active {
+    transform: scale(0.95);
+  }
+
+  .dark-mode .toggle-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 25px rgba(255, 255, 255, 0.1);
+    color: #ffd700;
+  }
+
+  .icon {
+    transition: all 0.3s ease;
+  }
+</style>
+
+<!-- 2: JavaScript Wonders-->

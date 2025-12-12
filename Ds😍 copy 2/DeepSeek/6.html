@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Animated Checkbox</title>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: #000000;
+      font-family: 'Quicksand', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .checkbox-container {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      user-select: none;
+      cursor: pointer;
+      background: #ffffff;
+      padding: 20px 30px;
+      border-radius: 16px;
+      box-shadow: 10px 10px 20px #dbe3ea, -10px -10px 20px #ffffff;
+      transition: all 0.3s ease;
+    }
+
+    .checkbox-wrapper {
+      position: relative;
+      width: 36px;
+      height: 36px;
+    }
+
+    .checkbox-wrapper input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .custom-checkbox {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 36px;
+      height: 36px;
+      border: 2px solid #3498db;
+      border-radius: 8px;
+      background: #f0f4f8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.25s ease;
+      box-shadow: inset 2px 2px 5px #dbe3ea, inset -2px -2px 5px #ffffff;
+    }
+
+    .checkbox-wrapper:hover .custom-checkbox {
+      transform: scale(1.1);
+      border-color: #2980b9;
+    }
+
+    .checkmark-icon {
+      width: 20px;
+      height: 20px;
+      fill: #ffffff;
+      transform: scale(0) rotate(0deg);
+      transition: transform 0.3s ease;
+      pointer-events: none;
+    }
+
+    .checkbox-wrapper input:checked + .custom-checkbox {
+      background-color: #2ecc71;
+      border-color: #27ae60;
+      box-shadow: 0 0 15px rgba(46, 204, 113, 0.4);
+    }
+
+    .checkbox-wrapper input:checked + .custom-checkbox .checkmark-icon {
+      transform: scale(1) rotate(360deg);
+    }
+
+    .label-text {
+      font-size: 18px;
+      color: #34495e;
+    }
+  </style>
+</head>
+<body>
+  <label class="checkbox-container">
+    <div class="checkbox-wrapper">
+      <input type="checkbox" id="checkbox" />
+      <div class="custom-checkbox">
+        <svg class="checkmark-icon" viewBox="0 0 24 24">
+          <path d="M20.285,6.709c-0.391-0.391-1.023-0.391-1.414,0L10,15.58l-4.871-4.871c-0.391-0.391-1.023-0.391-1.414,0
+          s-0.391,1.023,0,1.414l5.578,5.578c0.391,0.391,1.023,0.391,1.414,0l9.578-9.578C20.676,7.732,20.676,7.1,20.285,6.709z"/>
+        </svg>
+      </div>
+    </div>
+    <span class="label-text">Subscribe for more!</span>
+  </label>
+</body>
+</html>
+
+<!--📅 Day 3: Custom Animated Checkbox (CSS + JS)
+Title: "Smooth Animated Checkbox in 1 Minute! ✅ #CSS #JavaScript"
+📌 Description:
+"Upgrade your forms with this sleek animated checkbox! No libraries, just CSS & JS. Like & Follow for daily frontend gems! 💎 #WebDev #UI"
+
+🏷️ Tags:
+#Checkbox #CSS #JavaScript #WebForms #UIAnimations #FrontendDev #CodingShorts

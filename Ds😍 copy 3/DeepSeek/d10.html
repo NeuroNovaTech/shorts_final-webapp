@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #000;
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        
+        .container {
+            text-align: center;
+            z-index: 10;
+            position: relative;
+        }
+        
+        h1 {
+            color: #FF5722;
+            text-shadow: 0 0 10px #E64A19;
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+        }
+        
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        
+        .message {
+            color: #FFCCBC;
+            font-size: 1.5rem;
+            margin-top: 20px;
+            text-shadow: 0 0 5px #E64A19;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1></h1>
+        <p class="message"></p>
+    </div>
+    
+    <canvas id="fireworks"></canvas>
+
+    <script>
+        const canvas = document.getElementById('fireworks');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        let flowers = [];
+        const colors = ['#FF5722', '#E64A19', '#FF7043', '#FF8A65', '#FFAB91'];
+        
+        class Flower {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.petals = 6 + Math.floor(Math.random() * 6);
+                this.size = Math.random() * 20 + 10;
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+                this.angle = 0;
+                this.angleSpeed = Math.random() * 0.02 + 0.01;
+                this.alpha = 1;
+                this.decay = Math.random() * 0.005 + 0.005;
+                this.particles = [];
+                
+                // Create petal particles
+                for (let i = 0; i < this.petals; i++) {
+                    const angle = (i / this.petals) * Math.PI * 2;
+                    const distance = 0;
+                    this.particles.push({
+                        x: this.x,
+                        y: this.y,
+                        angle: angle,
+                        distance: distance,
+                        speed: Math.random() * 2 + 1
+                    });
+                }
+            }
+            
+            update() {
+                this.angle += this.angleSpeed;
+                this.alpha -= this.decay;
+                
+                // Update petal particles
+                this.particles.forEach(particle => {
+                    particle.distance += particle.speed;
+                    particle.x = this.x + Math.cos(particle.angle) * particle.distance;
+                    particle.y = this.y + Math.sin(particle.angle) * particle.distance;
+                });
+            }
+            
+            draw() {
+                ctx.globalAlpha = this.alpha;
+                
+                // Draw petals
+                this.particles.forEach(particle => {
+                    ctx.beginPath();
+                    ctx.arc(particle.x, particle.y, this.size / 2, 0, Math.PI * 2);
+                    ctx.fillStyle = this.color;
+                    ctx.fill();
+                });
+                
+                // Draw center
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size / 4, 0, Math.PI * 2);
+                ctx.fillStyle = '#FFEB3B';
+                ctx.fill();
+                
+                ctx.globalAlpha = 1;
+            }
+        }
+        
+        function animate() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            if (Math.random() < 0.02) {
+                const x = Math.random() * canvas.width;
+                const y = Math.random() * canvas.height;
+                flowers.push(new Flower(x, y));
+            }
+            
+            flowers.forEach((flower, index) => {
+                flower.update();
+                flower.draw();
+                
+                if (flower.alpha <= 0) {
+                    flowers.splice(index, 1);
+                }
+            });
+            
+            requestAnimationFrame(animate);
+        }
+        
+        animate();
+        
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>

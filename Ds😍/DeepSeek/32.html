@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { margin: 0; overflow: hidden; }
+    canvas { display: block; }
+  </style>
+</head>
+<body>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+  <script>
+    // Scene setup
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    // Create water plane
+    const geometry = new THREE.PlaneGeometry(10, 10, 128, 128);
+    const material = new THREE.MeshBasicMaterial({ 
+      color: 0x006994,
+      wireframe: true 
+    });
+    const water = new THREE.Mesh(geometry, material);
+    scene.add(water);
+    camera.position.z = 5;
+
+    // Ripple effect
+    document.addEventListener('mousemove', (e) => {
+      const vertices = water.geometry.attributes.position.array;
+      const mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+      const mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
+      
+      for (let i = 0; i < vertices.length; i += 3) {
+        const x = vertices[i];
+        const y = vertices[i + 1];
+        const distance = Math.sqrt((x - mouseX) ** 2 + (y - mouseY) ** 2);
+        vertices[i + 2] = Math.sin(distance * 20 - Date.now() * 0.005) * 0.1;
+      }
+      water.geometry.attributes.position.needsUpdate = true;
+    });
+
+    // Animation loop
+    function animate() {
+      requestAnimationFrame(animate);
+      renderer.render(scene, camera);
+    }
+    animate();
+  </script>
+</body>
+</html>
+Day 34: WebGL Water Ripple
+(Trending: Liquid Effects)
+
+"Click to make WATER RIPPLES! 🌊 (WebGL magic)"
+

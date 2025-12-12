@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>SVG Morphing</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+  <style>
+    body { display: flex; justify-content: center; align-items: center; height: 100vh; background: #1a1a2e; }
+    svg { width: 300px; height: 300px; }
+  </style>
+</head>
+<body>
+  <svg viewBox="0 0 200 200">
+    <path id="morph" fill="#ff6b6b" d="M40,40 L160,40 L160,160 L40,160 Z"></path>
+  </svg>
+
+  <script>
+    const morph = document.getElementById('morph');
+    const shapes = [
+      "M40,40 L160,40 L160,160 L40,160 Z", // Square
+      "M100,20 L180,100 L100,180 L20,100 Z", // Diamond
+      "M100,20 C180,20 180,180 100,180 C20,180 20,20 100,20 Z" // Circle-like
+    ];
+
+    let currentShape = 0;
+    setInterval(() => {
+      currentShape = (currentShape + 1) % shapes.length;
+      gsap.to(morph, { 
+        attr: { d: shapes[currentShape] }, 
+        duration: 1.5, 
+        ease: "elastic.out(1, 0.5)" 
+      });
+    }, 2000);
+  </script>
+</body>
+</html>
+<!--Day 4: SVG Morphing Animation (GSAP + SVG Paths)
+Effect: Smooth shape-shifting SVG animation.-->

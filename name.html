@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bubbly Button CSS Animation</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      background-color: #000;
+      font-family: 'Poppins', sans-serif;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .main-container {
+      text-align: left;
+      max-width: 90%;
+      width: 360px;
+    }
+
+    .username {
+      background: white;
+      color: black;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-weight: bold;
+      font-family: 'Courier New', Courier, monospace;
+      margin-bottom: 20px;
+      display: inline-block; /* KEY: Shrinks to fit content */
+      font-size: 14px;
+      word-break: break-word;
+    }
+
+    .content {
+      display: flex;
+      align-items: flex-start;
+    }
+
+    .line {
+      width: 4px;
+      background-color: lightblue;
+      margin-right: 12px;
+      align-self: stretch; /* Line height matches text */
+    }
+
+    .text-block {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .title {
+      font-size: 1.6rem;
+      color: lightgreen;
+      margin: 0;
+      font-weight: 600;
+      word-break: break-word;
+    }
+
+    .subtitle {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      color: white;
+      margin-top: 5px;
+      word-break: break-word;
+    }
+
+    @media (max-width: 400px) {
+      .title {
+        font-size: 1.6px;
+      }
+      .subtitle {
+        font-size: 1rem;
+      }
+      .username {
+        font-size: 13px;
+        padding: 5px 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="main-container">
+    <div class="username">@NeuroNovaTech</div>
+    <div class="content">
+      <div class="line"></div>
+      <div class="text-block">
+        <div class="title">Retro NewYear Animation</div>
+        <div class="subtitle">JS Animation</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

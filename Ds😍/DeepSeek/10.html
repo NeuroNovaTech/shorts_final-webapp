@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      background: #000000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: Arial;
+    }
+    .ai-message { 
+      color: white;
+      font-size: 1.5rem;
+      max-width: 80%;
+      border-left: 3px solid #10a37f;
+      padding-left: 20px;
+    }
+    .cursor {
+      display: inline-block;
+      width: 10px;
+      height: 1.5rem;
+      background: white;
+      animation: blink 0.7s infinite;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="ai-message" id="message"></div>
+  <script>
+    const text = "Hello! I'm an AI assistant. How can I help you today?";
+    const message = document.getElementById('message');
+    let i = 0;
+    const typing = setInterval(() => {
+      message.innerHTML = text.substring(0, i) + '<span class="cursor"></span>';
+      i++;
+      if (i > text.length) clearInterval(typing);
+    }, 100);
+  </script>
+</body>
+</html>
+
+<!--Day 10: AI-Like Typing Effect
+(Trending: ChatGPT UI Clone)
+
+"FAKE an AI typing effect! 🤖 (Like ChatGPT but simpler)"
+

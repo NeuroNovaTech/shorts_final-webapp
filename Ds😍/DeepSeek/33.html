@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { 
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: Arial;
+      background-color: black;
+    }
+    #container {
+      width: 80%;
+      height: 80%;
+      position: relative;
+    }
+    canvas { 
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
+    }
+    .info {
+      position: relative;
+      z-index: 2;
+      color: white;
+      max-width: 50%;
+      background: rgba(0,0,0,0.7);
+      padding: 20px;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div id="container">
+    
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+  <script>
+    // Setup
+    const container = document.getElementById('container');
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, container.offsetWidth / container.offsetHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ alpha: true });
+    renderer.setSize(container.offsetWidth, container.offsetHeight);
+    container.appendChild(renderer.domElement);
+
+    // Add cube
+    const geometry = new THREE.BoxGeometry(2, 2, 2);
+    const materials = [
+      new THREE.MeshBasicMaterial({ color: 0xff0000 }), // Right
+      new THREE.MeshBasicMaterial({ color: 0x00ff00 }), // Left
+      new THREE.MeshBasicMaterial({ color: 0x0000ff }), // Top
+      new THREE.MeshBasicMaterial({ color: 0xffff00 }), // Bottom
+      new THREE.MeshBasicMaterial({ color: 0xff00ff }), // Front
+      new THREE.MeshBasicMaterial({ color: 0x00ffff })  // Back
+    ];
+    const cube = new THREE.Mesh(geometry, materials);
+    scene.add(cube);
+    camera.position.z = 5;
+
+    // Mouse interaction
+    container.addEventListener('mousemove', (e) => {
+      const x = (e.clientX / window.innerWidth - 0.5) * 2;
+      const y = -(e.clientY / window.innerHeight - 0.5) * 2;
+      cube.rotation.y = x;
+      cube.rotation.x = y;
+    });
+
+    // Animation loop
+    function animate() {
+      requestAnimationFrame(animate);
+      renderer.render(scene, camera);
+    }
+    animate();
+  </script>
+</body>
+</html>
+<!--Day 35: 3D Portfolio Section
+(Trending: Interactive Resumes)
+
+"3D portfolios get 10x MORE HIRES! 💼 (Three.js template)"
+

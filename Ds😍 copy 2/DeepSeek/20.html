@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Theme Clock</title>
+    <style>
+        :root {
+            --bg-color: #000;
+            --text-color: #fff;
+            --accent-color: #48dbfb;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: var(--bg-color);
+            font-family: Arial;
+            transition: all 0.3s;
+        }
+        .clock {
+            font-size: 5rem;
+            font-weight: bold;
+            color: var(--text-color);
+            margin-bottom: 30px;
+        }
+        .date {
+            font-size: 1.5rem;
+            color: var(--text-color);
+            opacity: 0.8;
+            margin-bottom: 30px;
+        }
+        .theme-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .theme-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid white;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .theme-btn:hover {
+            transform: scale(1.1);
+        }
+        #theme1 { background: #222; }
+        #theme2 { background: #0f0f1a; }
+        #theme3 { background: #1a1a2e; }
+        #theme4 { background: #16213e; }
+    </style>
+</head>
+<body>
+    <div class="clock" id="clock"></div>
+    <div class="date" id="date"></div>
+    <div class="theme-buttons">
+        <div class="theme-btn" id="theme1" onclick="changeTheme('#222', '#fff', '#48dbfb')"></div>
+        <div class="theme-btn" id="theme2" onclick="changeTheme('#0f0f1a', '#fff', '#ff6b6b')"></div>
+        <div class="theme-btn" id="theme3" onclick="changeTheme('#1a1a2e', '#fff', '#1dd1a1')"></div>
+        <div class="theme-btn" id="theme4" onclick="changeTheme('#16213e', '#fff', '#feca57')"></div>
+    </div>
+
+    <script>
+        function updateClock() {
+            const now = new Date();
+            const clock = document.getElementById('clock');
+            const date = document.getElementById('date');
+            
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const seconds = now.getSeconds().toString().padStart(2, '0');
+            
+            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            
+            clock.textContent = `${hours}:${minutes}:${seconds}`;
+            date.textContent = `${days[now.getDay()]}, ${months[now.getMonth()]} ${now.getDate()}`;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        function changeTheme(bgColor, textColor, accentColor) {
+            document.documentElement.style.setProperty('--bg-color', bgColor);
+            document.documentElement.style.setProperty('--text-color', textColor);
+            document.documentElement.style.setProperty('--accent-color', accentColor);
+        }
+    </script>
+</body>
+</html>
+<!--📅 Day 27: Real-Time Clock with Customizable Themes (CSS Variables + JS)
+Title: *"Build a Theme-Switching Clock in 3 Minutes! ⏰ #JavaScript"*
+
+📌 Description:
+"Create a real-time clock with customizable themes using CSS variables! Perfect for dashboard UIs. Want more practical projects? Subscribe! #JavaScript #CSS #WebDev"
+
+🏷️ Tags:
+#Clock #CSSVariables #JavaScript #WebDev #Frontend
+

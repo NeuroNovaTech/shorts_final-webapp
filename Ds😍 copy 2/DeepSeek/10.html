@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Picker</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            font-family: Arial;
+            background-color: black;
+        }
+        canvas {
+            border: 2px solid #333;
+            cursor: crosshair;
+            margin-bottom: 20px;
+        }
+        #colorDisplay {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        p {
+            margin-top: 10px;
+            font-weight: bold;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="colorCanvas" width="300" height="200"></canvas>
+    <div id="colorDisplay"></div>
+    <p id="colorCode">#FFFFFF</p>
+
+    <script>
+        const canvas = document.getElementById('colorCanvas');
+        const ctx = canvas.getContext('2d');
+        const colorDisplay = document.getElementById('colorDisplay');
+        const colorCode = document.getElementById('colorCode');
+
+        // Create gradient
+        const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
+        gradient.addColorStop(0, '#FF0000');
+        gradient.addColorStop(0.17, '#FFFF00');
+        gradient.addColorStop(0.34, '#00FF00');
+        gradient.addColorStop(0.51, '#00FFFF');
+        gradient.addColorStop(0.68, '#0000FF');
+        gradient.addColorStop(0.85, '#FF00FF');
+        gradient.addColorStop(1, '#FF0000');
+
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Add brightness gradient
+        const brightnessGradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+        brightnessGradient.addColorStop(0, 'rgba(255,255,255,1)');
+        brightnessGradient.addColorStop(0.5, 'rgba(255,255,255,0)');
+        brightnessGradient.addColorStop(0.5, 'rgba(0,0,0,0)');
+        brightnessGradient.addColorStop(1, 'rgba(0,0,0,1)');
+
+        ctx.fillStyle = brightnessGradient;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        canvas.addEventListener('click', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const pixel = ctx.getImageData(x, y, 1, 1).data;
+            const hex = `#${pixel[0].toString(16).padStart(2, '0')}${pixel[1].toString(16).padStart(2, '0')}${pixel[2].toString(16).padStart(2, '0')}`;
+            
+            colorDisplay.style.backgroundColor = hex;
+            colorCode.textContent = hex;
+        });
+    </script>
+</body>
+</html>
+<!--📅 Day 10: Real-Time Color Picker (JavaScript + Canvas)
+Title: "Build a REAL-TIME Color Picker! 🎨 #JavaScript"
+
+📌 Description:
+"Create a professional color picker with JavaScript & Canvas! Perfect for design tools. Want more creative coding? Hit Subscribe! #JavaScript #WebDev"
+
+🏷️ Tags:
+#ColorPicker #Canvas #JavaScript #WebDesign #Frontend #CreativeCoding

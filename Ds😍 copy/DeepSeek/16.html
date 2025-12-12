@@ -1,0 +1,122 @@
+<div class="floating-blob" id="floatingBlob">
+  <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" class="blob-svg" preserveAspectRatio="xMidYMid meet">
+    <defs>
+      <linearGradient id="blobGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#ff7e5f" />
+        <stop offset="100%" stop-color="#feb47b" />
+      </linearGradient>
+      <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+        <feDropShadow dx="0" dy="10" stdDeviation="8" flood-color="#ffa07a" flood-opacity="0.5"/>
+      </filter>
+    </defs>
+    <path fill="url(#blobGradient)" filter="url(#shadow)" />
+  </svg>
+  <div class="island-content">
+    <h2>Liquid Island</h2>
+  </div>
+</div>
+
+<script>
+  const blob = document.querySelector('.blob-svg path');
+  const floatingBlob = document.getElementById('floatingBlob');
+
+  // Initial shape to avoid empty path on load
+  let currentShape = 0;
+
+  // Shapes for morphing (liquid blob style)
+  const shapes = [
+    'M57.2,-60.4C74.1,-39.3,74.3,-19.6,69.5,-3.1C64.8,13.4,55.9,26.7,43,38.6C30,50.5,12.9,61.1,-4.3,66.5C-21.6,71.8,-43.1,71.9,-54.1,59.8C-65.2,47.7,-65.8,23.5,-63.7,2.8C-61.6,-18,-56.9,-35.9,-46,-57.2C-35,-78.6,-17.5,-103.4,1.9,-105.1C21.4,-106.8,42.8,-85.4,57.2,-60.4Z',
+    'M50.8,-56.9C65.8,-40.5,68.3,-20.3,64.3,-5.7C60.2,9,49.7,18,39.2,27.8C28.7,37.6,18.2,48.3,4.6,53.8C-9,59.3,-18,59.6,-29.7,55.7C-41.3,51.8,-55.5,43.7,-60,32.2C-64.6,20.8,-59.5,5.9,-56.1,-7.3C-52.6,-20.5,-50.7,-31.2,-43.7,-47.3C-36.6,-63.3,-24.3,-84.7,-8.7,-83.3C7,-81.9,14,-57.3,50.8,-56.9Z',
+    'M58,-56.5C69,-44.6,63.4,-22.3,57.6,-6.1C51.7,10,45.5,19.9,35.5,29.3C25.6,38.7,11.9,47.8,-1.8,49.2C-15.5,50.6,-31,44.3,-44.2,33.8C-57.3,23.2,-68.1,8.4,-69.3,-7.3C-70.5,-23,-62.2,-39.8,-49.1,-52.6C-36,-65.4,-18,-74.3,-1,-72.8C16,-71.3,32,-59.5,58,-56.5Z'
+  ];
+
+  // Normalize shape coordinates to SVG space and make path usable
+  function normalizePath(d) {
+    // The provided shapes are from a blob generator with relative coords centered at (0,0)
+    // We need to translate them to fit SVG's 200x200 viewport centered at 100,100
+    // So we add 100 to both x and y coordinates
+    return d.replace(/(-?\d+\.?\d*),(-?\d+\.?\d*)/g, (match, x, y) => {
+      const nx = parseFloat(x) + 100;
+      const ny = parseFloat(y) + 100;
+      return `${nx},${ny}`;
+    });
+  }
+
+  // Apply normalized first shape on load
+  blob.setAttribute('d', normalizePath(shapes[0]));
+
+  function morphBlob() {
+    currentShape = (currentShape + 1) % shapes.length;
+    const nextPath = normalizePath(shapes[currentShape]);
+    blob.animate([
+      { d: blob.getAttribute('d') },
+      { d: nextPath }
+    ], {
+      duration: 3500,
+      fill: 'forwards',
+      easing: 'ease-in-out'
+    });
+    // Set attribute to last frame so next animation starts from correct place
+    setTimeout(() => blob.setAttribute('d', nextPath), 3500);
+
+    setTimeout(morphBlob, 4000);
+  }
+  morphBlob();
+
+  // Mouse move parallax on container
+  floatingBlob.addEventListener('mousemove', (e) => {
+    const rect = floatingBlob.getBoundingClientRect();
+    const x = (e.clientX - rect.left - rect.width / 2) / rect.width * 20;
+    const y = (e.clientY - rect.top - rect.height / 2) / rect.height * 20;
+
+    floatingBlob.style.transform = `translateX(${x}px) translateY(${y}px) scale(1.05)`;
+  });
+
+  floatingBlob.addEventListener('mouseleave', () => {
+    floatingBlob.style.transform = 'translateX(0) translateY(0) scale(1)';
+  });
+</script>
+
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  .floating-blob {
+    position: relative;
+    width: 220px;
+    height: 220px;
+    cursor: grab;
+    user-select: none;
+    transition: transform 0.3s ease;
+  }
+
+  .blob-svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .island-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-weight: 700;
+    text-shadow: 0 0 10px #ff7e5f;
+    pointer-events: none;
+    user-select: none;
+    font-size: 1.5rem;
+    text-align: center;
+  }
+</style>
+
+<!--Day 6: Interactive Floating Islands (CSS 3D + JS)
+📌 Hook: "How to make 3D floating islands that react to mouse movement! 🏝️ #CSS3D"-->
+

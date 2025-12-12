@@ -1,0 +1,48 @@
+<canvas id="genArt" width="300" height="300"></canvas>
+<script>
+  const canvas = document.getElementById('genArt');
+  const ctx = canvas.getContext('2d');
+  
+  function draw() {
+    // Fill background with black
+    ctx.fillStyle = 'black';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Create a generative pattern
+    for (let i = 0; i < 100; i++) {
+      const x = Math.random() * canvas.width;
+      const y = Math.random() * canvas.height;
+      const size = Math.random() * 20 + 5;
+      const hue = Math.random() * 360;
+      
+      ctx.beginPath();
+      ctx.arc(x, y, size, 0, Math.PI * 2);
+      ctx.fillStyle = `hsla(${hue}, 80%, 60%, 0.7)`;
+      ctx.fill();
+      
+      // Add connecting lines
+      if (i > 0) {
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(
+          x + (Math.random() - 0.5) * 50,
+          y + (Math.random() - 0.5) * 50
+        );
+        ctx.strokeStyle = `hsla(${hue}, 80%, 60%, 0.3)`;
+        ctx.stroke();
+      }
+    }
+  }
+  
+  draw();
+  canvas.addEventListener('click', draw);
+</script>
+<style>
+  *{
+    background-color: black;
+  }
+</style>
+
+<!--🔥 Day 21: Procedural Generative Art
+📌 Hook: "Infinite generative art with just 20 lines of JavaScript! 🎨 #CreativeCoding"
+

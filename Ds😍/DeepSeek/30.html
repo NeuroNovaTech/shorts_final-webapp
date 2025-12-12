@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { margin: 0; overflow: hidden; }
+    canvas { display: block; }
+    #instructions {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      color: white;
+      font-family: Arial;
+      background: rgba(0,0,0,0.5);
+      padding: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div id="instructions">WASD to move • Look around with mouse</div>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/controls/PointerLockControls.js"></script>
+  <script>
+    // Setup
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x000000);
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    // Maze walls
+    const wallGeometry = new THREE.BoxGeometry(1, 1, 1);
+    const wallMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    const walls = [];
+    
+    // Simple maze layout (1 = wall)
+    const maze = [
+      [1, 1, 1, 1, 1],
+      [1, 0, 0, 0, 1],
+      [1, 0, 1, 0, 1],
+      [1, 0, 0, 0, 1],
+      [1, 1, 1, 1, 1]
+    ];
+    
+    // Create walls
+    for (let y = 0; y < maze.length; y++) {
+      for (let x = 0; x < maze[y].length; x++) {
+        if (maze[y][x] === 1) {
+          const wall = new THREE.Mesh(wallGeometry, wallMaterial);
+          wall.position.set(x - maze[0].length/2, 0, y - maze.length/2);
+          scene.add(wall);
+          walls.push(wall);
+        }
+      }
+    }
+
+    // Controls
+    const controls = new THREE.PointerLockControls(camera, document.body);
+    scene.add(controls.getObject());
+    document.addEventListener('click', () => controls.lock());
+
+    // Movement
+    const moveSpeed = 0.1;
+    document.addEventListener('keydown', (e) => {
+      if (!controls.isLocked) return;
+      const direction = new THREE.Vector3();
+      camera.getWorldDirection(direction);
+      
+      if (e.key === 'w') controls.moveRight(-direction.x * moveSpeed);
+      if (e.key === 's') controls.moveRight(direction.x * moveSpeed);
+      if (e.key === 'a') controls.moveRight(-direction.z * moveSpeed);
+      if (e.key === 'd') controls.moveRight(direction.z * moveSpeed);
+    });
+
+    // Start position
+    camera.position.y = 1;
+
+    // Render loop
+    function animate() {
+      requestAnimationFrame(animate);
+      renderer.render(scene, camera);
+    }
+    animate();
+  </script>
+</body>
+</html>
+<!--Day 32: First-Person 3D Maze (Game Dev)
+(Trending: Browser Games)
+
+"Code a 3D MAZE GAME in your browser! 🎮 (First-person controls)"-->
+

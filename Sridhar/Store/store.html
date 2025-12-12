@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Store – MySite</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <div class="navbar">
+      <div class="logo-group">
+        <img src="logo.png" alt="Logo" class="logo" />
+        <span class="logo-text">MySite</span>
+      </div>
+      <div class="right-actions">
+        <button class="login-btn mobile-right">Login</button>
+        <div class="hamburger" id="hamburger">
+          <div class="lines">
+            <span class="bar bar1"></span>
+            <span class="bar bar2"></span>
+          </div>
+          <div class="cross" id="cross">
+            <span class="cross-line cross-line1"></span>
+            <span class="cross-line cross-line2"></span>
+          </div>
+        </div>
+      </div>
+      <div class="nav-area">
+        <ul class="nav-links">
+          <li><a href="#">Home</a></li>
+          <li><a href="#">Store</a></li>
+          <li><a href="#">Portfolio</a></li>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+        <button class="login-btn desktop-login">Login</button>
+      </div>
+    </div>
+    <div class="mobile-menu" id="mobile-menu">
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">Store</a></li>
+        <li><a href="#">Portfolio</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <main class="store-container">
+    <h2>Digital Code Products</h2>
+    <div class="search-box">
+      <input type="text" id="product-search" placeholder="Search products..." />
+    </div>
+    <div class="products-grid" id="product-list">
+      <!-- Paid Product -->
+      <div class="product-card" data-title="Pro Web Design E‑Book" data-amount="900" data-paid="true">
+        <img src="logo.PNG" alt="Ebook" />
+        <h3>Pro Web Design E‑Book</h3>
+        <p>Learn responsive web design in this downloadable PDF.</p>
+        <div class="action-buttons">
+          <a class="demo-btn" href="https://youtu.be/demo1" target="_blank">Demo</a>
+          <button class="buy-btn">Buy ₹9</button>
+          <a class="download-btn hidden" href="code/ebook.zip" download>Download</a>
+        </div>
+      </div>
+      
+      <div class="product-card" data-title="Pro Web Design E‑Book" data-amount="100" data-paid="true">
+        <img src="logo.PNG" alt="Ebook" />
+        <h3>Pro Web Design E‑Book</h3>
+        <p>Learn responsive web design in this downloadable PDF.</p>
+        <div class="action-buttons">
+          <a class="demo-btn" href="https://youtu.be/demo1" target="_blank">Demo</a>
+          <button class="buy-btn">Buy ₹10<b/button>
+          <a class="download-btn hidden" href="code/ebook.zip" download>Download</a>
+        </div>
+      </div>
+
+      <!-- Free Product -->
+      <div class="product-card" data-title="Glassmorphic Card UI">
+        <div class="free-tag">FREE</div>
+        <img src="code2.jpg" alt="Glass UI" />
+        <h3>Glassmorphic Card UI</h3>
+        <p>Free HTML + CSS snippet to create elegant glass UI cards.</p>
+        <div class="action-buttons">
+          <a class="demo-btn" href="https://codepen.io/demo-glass" target="_blank">Demo</a>
+          <a class="buy-btn" href="code/glass-card.zip" download>Download</a>
+        </div>
+      </div>
+      
+      <div class="product-card" data-title="Glassmorphic Card UI">
+        <div class="free-tag">FREE</div>
+        <img src="code2.jpg" alt="Glass UI" />
+        <h3>Glassmorphic Card UI</h3>
+        <p>Free HTML + CSS snippet to create elegant glass UI cards.</p>
+        <div class="action-buttons">
+          <a class="demo-btn" href="https://codepen.io/demo-glass" target="_blank">Demo</a>
+          <a class="buy-btn" href="code/glass-card.zip" download>Download</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script src="store.js"></script>
+</body>
+</html>

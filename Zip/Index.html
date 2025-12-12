@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Retro Glitch New Year</title>
+  <style>
+    :root {
+      --bg: #071027;
+      --neon: #39ffca;
+      --accent: #ff3b7f;
+      --muted: rgba(255, 255, 255, 0.85);
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      font-family: monospace, ui-monospace, SFMono-Regular, Menlo, RobotoMono, Consolas;
+    }
+
+    .wrap {
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background:
+        radial-gradient(ellipse at 20% 10%, rgba(57, 255, 202, 0.04), transparent 8%),
+        linear-gradient(180deg, var(--bg), #02030a);
+      color: #fff;
+      overflow: hidden;
+      position: relative;
+      padding: 6%
+    }
+
+    .stage {
+      width: 100%;
+      max-width: 720px;
+      text-align: center;
+      z-index: 2
+    }
+
+    .counter {
+      font-size: clamp(48px, 16vw, 140px);
+      font-weight: 900;
+      letter-spacing: 0.04em;
+      color: var(--neon);
+      text-transform: uppercase;
+      text-shadow: 0 8px 28px rgba(0, 0, 0, 0.7), 0 0 18px rgba(57, 255, 202, 0.1);
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: var(--muted);
+      margin-top: 10px
+    }
+
+    .glitch {
+      position: relative;
+      display: inline-block;
+    }
+
+    .glitch::before,
+    .glitch::after {
+      content: attr(data-text);
+      position: absolute;
+      left: 0;
+      top: 0;
+      clip: rect(0, 9999px, 0, 0);
+    }
+
+    .glitch::before {
+      color: #ff4d90;
+      transform: translate(-6px, -2px) skewX(-6deg);
+      mix-blend-mode: screen;
+    }
+
+    .glitch::after {
+      color: #42f0ff;
+      transform: translate(6px, 2px) skewX(6deg);
+      mix-blend-mode: screen;
+      opacity: 0.9;
+    }
+
+    .btn {
+      margin-top: 18px;
+      padding: 10px 18px;
+      border-radius: 12px;
+      border: none;
+      background: linear-gradient(90deg, var(--accent), var(--neon));
+      color: #001;
+      font-weight: 700;
+      cursor: pointer
+    }
+
+    /* VHS scanlines */
+    .scan {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 100% 3px;
+      mix-blend-mode: overlay;
+      opacity: 0.16
+    }
+
+    /* small footer */
+    .footer {
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.7);
+      z-index: 3
+    }
+
+    @media (max-width:520px) {
+      .counter {
+        font-size: clamp(48px, 22vw, 110px)
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap" id="wrap">
+    <div class="stage">
+      <div class="counter glitch" id="display" data-text="5">5</div>
+      <div class="subtitle">Countdown to 2026 — tap to replay glitch</div>
+      <button class="btn" id="go">Replay ▶</button>
+    </div>
+  </div>
+
+  <script>
+    /* Retro Glitch Countdown
+       - Auto counts 5..1, then shows "HAPPY NEW YEAR 2026" with glitch + flicker.
+       - Press the Replay button to run again.
+    */
+
+    const display = document.getElementById('display');
+    const go = document.getElementById('go');
+
+    let seq = [5, 4, 3, 2, 1];
+    let playing = false;
+
+    function flickerText(text) {
+      display.textContent = text;
+      display.setAttribute('data-text', text);
+      // quick flicker by toggling visibility
+      display.style.opacity = 0;
+      setTimeout(() => display.style.opacity = 1, 90);
+      setTimeout(() => display.style.opacity = 0.6, 220);
+      setTimeout(() => display.style.opacity = 1, 330);
+    }
+
+    function showFinal() {
+      // show "HAPPY\nNEW YEAR\n2026" with glitch effect cycles
+      const lines = ['HAPPY', 'NEW YEAR', '2026'];
+      let i = 0;
+      function cycle() {
+        if (i < lines.length) {
+          flickerText(lines[i]);
+          i++;
+          setTimeout(cycle, 600);
+        } else {
+          // final rapid glitch shakes
+          let t = 0;
+          const gl = setInterval(() => {
+            // random tiny shifts by changing CSS transform
+            display.style.transform = `translate(${(Math.random() - 0.5) * 8}px, ${(Math.random() - 0.5) * 6}px) skew(${(Math.random() - 0.5) * 3}deg)`;
+            t++;
+            if (t > 10) { clearInterval(gl); display.style.transform = 'none'; playing = false; }
+          }, 80);
+        }
+      }
+      cycle();
+    }
+
+    function runCountdown() {
+      if (playing) return;
+      playing = true;
+      let idx = 0;
+      function step() {
+        if (idx < seq.length) {
+          flickerText(seq[idx]);
+          idx++;
+          setTimeout(step, 800);
+        } else {
+          showFinal();
+        }
+      }
+      step();
+    }
+
+    // auto start once loaded (small delay to capture attention)
+    setTimeout(runCountdown, 600);
+
+    // replay button
+    go.addEventListener('click', runCountdown);
+
+    // also allow tap anywhere to replay
+    document.getElementById('wrap').addEventListener('pointerdown', runCountdown);
+
+    // optional: auto stop if user navigates away
+    document.addEventListener('visibilitychange', () => { if (document.hidden) playing = false; });
+
+  </script>
+</body>
+
+</html>

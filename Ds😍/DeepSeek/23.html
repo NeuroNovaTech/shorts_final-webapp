@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        body {
+            background-color: black;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .shadow-text {
+            font-size: 40px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 0px 0px 0px lightgreen;
+            transition: text-shadow 0.2s;
+        }
+    </style>
+    <script>
+        document.addEventListener("mousemove", (event) => {
+            let x = event.clientX / 50;
+            let y = event.clientY / 50;
+            document.querySelector(".shadow-text").style.textShadow = `${x}px ${y}px 5px lightgreen`;
+        });
+    </script>
+</head>
+<body>
+    <h1 class="shadow-text">Frontend Magic!</h1>
+</body>
+</html>

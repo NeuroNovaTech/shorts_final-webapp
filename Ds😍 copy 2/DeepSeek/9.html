@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SVG Morph</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #000;
+        }
+        svg {
+            width: 200px;
+            height: 200px;
+            cursor: pointer;
+        }
+        path {
+            fill: #ff6b6b;
+        }
+    </style>
+</head>
+<body>
+    <svg viewBox="0 0 100 100">
+        <path id="shape" d="M50 10 L90 50 L50 90 L10 50 Z"></path>
+    </svg>
+
+    <script>
+        const shape = document.getElementById('shape');
+        const paths = [
+            "M50 10 L90 50 L50 90 L10 50 Z", // Diamond
+            "M20 20 L80 20 L80 80 L20 80 Z", // Square
+            "M50 10 L90 90 L10 90 Z",        // Triangle
+            "M50 10 A40 40 0 1 1 50 90 A40 40 0 1 1 50 10 Z" // Circle
+        ];
+
+        let currentPath = 0;
+        
+        shape.addEventListener('click', () => {
+            currentPath = (currentPath + 1) % paths.length;
+            gsap.to(shape, {
+                attr: { d: paths[currentPath] },
+                duration: 1,
+                ease: "elastic.out(1, 0.3)"
+            });
+        });
+    </script>
+</body>
+</html>
+<!--📅 Day 9: SVG Morphing Animation (GSAP)
+Title: "Mind-Blowing SVG Morphing Effect! (GSAP) 🌀 #Animation"
+
+>
+📌 Description:
+"Transform SVGs smoothly with GSAP! This morphing effect is perfect for logos & icons. Want more GSAP tutorials? Drop a ❤️! #GSAP #SVG #WebAnimation"
+
+🏷️ Tags:
+#GSAP #SVG #Animation #WebDesign #Frontend #CreativeCoding
+

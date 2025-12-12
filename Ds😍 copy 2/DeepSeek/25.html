@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snake Game</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #222;
+        }
+        canvas {
+            border: 2px solid white;
+        }
+        #score {
+            position: absolute;
+            top: 20px;
+            color: white;
+            font-family: Arial;
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div id="score">Score: 0</div>
+    <canvas id="game" width="400" height="400"></canvas>
+
+    <script>
+        const canvas = document.getElementById('game');
+        const ctx = canvas.getContext('2d');
+        const scoreEl = document.getElementById('score');
+        
+        const GRID_SIZE = 20;
+        const TILE_COUNT = canvas.width / GRID_SIZE;
+        let score = 0;
+        let gameOver = false;
+        
+        // Snake
+        const snake = {
+            body: [{ x: 10, y: 10 }],
+            dx: 1,
+            dy: 0,
+            draw() {
+                this.body.forEach((segment, index) => {
+                    ctx.fillStyle = index === 0 ? '#48dbfb' : '#1dd1a1';
+                    ctx.fillRect(segment.x * GRID_SIZE, segment.y * GRID_SIZE, GRID_SIZE, GRID_SIZE);
+                    ctx.strokeStyle = 'white';
+                    ctx.strokeRect(segment.x * GRID_SIZE, segment.y * GRID_SIZE, GRID_SIZE, GRID_SIZE);
+                });
+            },
+            update() {
+                const head = { x: this.body[0].x + this.dx, y: this.body[0].y + this.dy };
+                
+                // Wall collision
+                if (head.x < 0 || head.x >= TILE_COUNT || head.y < 0 || head.y >= TILE_COUNT) {
+                    gameOver = true;
+                    return;
+                }
+                
+                // Self collision
+                if (this.body.some(segment => segment.x === head.x && segment.y === head.y)) {
+                    gameOver = true;
+                    return;
+                }
+                
+                // Move snake
+                this.body.unshift(head);
+                
+                // Check if snake ate food
+                if (head.x === food.x && head.y === food.y) {
+                    score++;
+                    scoreEl.textContent = `Score: ${score}`;
+                    food.move(this.body);
+                } else {
+                    this.body.pop();
+                }
+            },
+            changeDirection(newDx, newDy) {
+                // Prevent reversing direction
+                if (this.dx !== -newDx || this.dy !== -newDy) {
+                    this.dx = newDx;
+                    this.dy = newDy;
+                }
+            }
+        };
+        
+        // Food
+        const food = {
+            x: 5,
+            y: 5,
+            draw() {
+                ctx.fillStyle = '#ff6b6b';
+                ctx.fillRect(this.x * GRID_SIZE, this.y * GRID_SIZE, GRID_SIZE, GRID_SIZE);
+                ctx.strokeStyle = 'white';
+                ctx.strokeRect(this.x * GRID_SIZE, this.y * GRID_SIZE, GRID_SIZE, GRID_SIZE);
+            },
+            move(snakeBody) {
+                let newX, newY;
+                let overlapping;
+                
+                do {
+                    newX = Math.floor(Math.random() * TILE_COUNT);
+                    newY = Math.floor(Math.random() * TILE_COUNT);
+                    overlapping = snakeBody.some(segment => segment.x === newX && segment.y === newY);
+                } while (overlapping);
+                
+                this.x = newX;
+                this.y = newY;
+            }
+        };
+        
+        // Controls
+        document.addEventListener('keydown', (e) => {
+            switch (e.key) {
+                case 'ArrowUp': snake.changeDirection(0, -1); break;
+                case 'ArrowDown': snake.changeDirection(0, 1); break;
+                case 'ArrowLeft': snake.changeDirection(-1, 0); break;
+                case 'ArrowRight': snake.changeDirection(1, 0); break;
+            }
+        });
+        
+        // Game loop
+        function gameLoop() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            snake.draw();
+            snake.update();
+            food.draw();
+            
+            if (!gameOver) {
+                setTimeout(() => requestAnimationFrame(gameLoop), 100);
+            } else {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = 'white';
+                ctx.font = '30px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('GAME OVER', canvas.width / 2, canvas.height / 2);
+                ctx.font = '20px Arial';
+                ctx.fillText(`Final Score: ${score}`, canvas.width / 2, canvas.height / 2 + 40);
+                ctx.fillText('Press F5 to restart', canvas.width / 2, canvas.height / 2 + 80);
+            }
+        }
+        gameLoop();
+    </script>
+</body>
+</html>
+<!--📅 Day 33: Snake Game (Canvas + Keyboard Controls)
+Title: "Code Snake Game in 5 Minutes! 🐍 #JavaScript"
+📌 Description:
+"Code the classic Snake game with vanilla JavaScript! Learn game loops and keyboard controls. Want more retro game tutorials? Subscribe! #JavaScript #GameDev"
+
+🏷️ Tags:
+#SnakeGame #Retro #JavaScript #GameDev #NoLibraries

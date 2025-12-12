@@ -1,0 +1,96 @@
+<div class="counter">
+  <button id="decrement">−</button>
+  <span id="count">0</span>
+  <button id="increment">+</button>
+</div>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@600&display=swap');
+
+body {
+  background: #000000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-family: 'Quicksand', sans-serif;
+  margin: 0;
+}
+
+.counter {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  background: #ecf0f3;
+  padding: 30px 40px;
+  border-radius: 20px;
+  box-shadow: 10px 10px 20px #d1d9e6,
+              -10px -10px 20px #ffffff;
+  transition: all 0.3s ease-in-out;
+}
+
+.counter button {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: none;
+  font-size: 28px;
+  background: #3498db;
+  color: white;
+  cursor: pointer;
+  box-shadow: 4px 4px 8px #2980b9,
+              -4px -4px 8px #5dade2;
+  transition: transform 0.1s ease, box-shadow 0.2s ease;
+}
+
+.counter button:active {
+  transform: scale(0.95);
+  box-shadow: inset 2px 2px 6px #2980b9,
+              inset -2px -2px 6px #5dade2;
+}
+
+#count {
+  font-size: 48px;
+  min-width: 60px;
+  text-align: center;
+  transition: all 0.3s ease;
+  color: #2c3e50;
+  position: relative;
+}
+
+#count.animate {
+  animation: pop 0.3s ease;
+  color: #e74c3c;
+}
+
+@keyframes pop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.4); }
+  100% { transform: scale(1); }
+}
+</style>
+
+<script>
+let count = 0;
+const countEl = document.getElementById('count');
+const increment = document.getElementById('increment');
+const decrement = document.getElementById('decrement');
+
+function updateCountDisplay() {
+  countEl.textContent = count;
+  countEl.classList.add('animate');
+  setTimeout(() => countEl.classList.remove('animate'), 300);
+}
+
+increment.addEventListener('click', () => {
+  count++;
+  updateCountDisplay();
+});
+
+decrement.addEventListener('click', () => {
+  count--;
+  updateCountDisplay();
+});
+</script>
+
+<!--2. Interactive JavaScript Counter

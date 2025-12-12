@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Unique Spotify-Style Equalizer</title>
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    background: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .equalizer {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    height: 80px;
+    width: 140px;
+  }
+  .bar {
+    width: 14px;
+    background: linear-gradient(180deg, #1ed760, #13a94b);
+    border-radius: 8px 8px 0 0;
+    box-shadow:
+      0 0 8px #1ed760aa,
+      0 0 15px #1ed76066;
+    transform-origin: bottom center;
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    animation-iteration-count: infinite;
+  }
+
+  /* Different bar animation speeds and delays for flow effect */
+  .bar:nth-child(1) {
+    animation-name: wave;
+    animation-duration: 1.6s;
+    animation-delay: 0s;
+  }
+  .bar:nth-child(2) {
+    animation-name: wave;
+    animation-duration: 1.4s;
+    animation-delay: 0.1s;
+  }
+  .bar:nth-child(3) {
+    animation-name: wave;
+    animation-duration: 1.8s;
+    animation-delay: 0.2s;
+  }
+  .bar:nth-child(4) {
+    animation-name: wave;
+    animation-duration: 1.5s;
+    animation-delay: 0.3s;
+  }
+  .bar:nth-child(5) {
+    animation-name: wave;
+    animation-duration: 1.7s;
+    animation-delay: 0.4s;
+  }
+
+  /* Smooth wave animation using scaleY */
+  @keyframes wave {
+    0%, 100% {
+      transform: scaleY(0.4);
+      box-shadow:
+        0 0 6px #1ed760aa,
+        0 0 12px #1ed76044;
+    }
+    50% {
+      transform: scaleY(1);
+      box-shadow:
+        0 0 15px #1ed760cc,
+        0 0 25px #1ed760aa;
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="equalizer">
+    <div class="bar" style="height: 60px;"></div>
+    <div class="bar" style="height: 40px;"></div>
+    <div class="bar" style="height: 50px;"></div>
+    <div class="bar" style="height: 65px;"></div>
+    <div class="bar" style="height: 35px;"></div>
+  </div>
+</body>
+</html>
+
+<!--Day 17: Spotify Equalizer Animation
+(Trending: Music UI Trends)
+
+"Code a LIVE equalizer like Spotify! 🎵 (Pure CSS)"
+

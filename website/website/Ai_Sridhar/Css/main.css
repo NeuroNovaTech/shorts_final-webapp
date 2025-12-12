@@ -1,0 +1,441 @@
+@import url('https://fonts.googleapis.com/css2?family=poppins:wght@400;500;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    background-color: transparent;
+}
+
+nav.navbar {
+    display: flex;
+    gap: 20px;
+}
+
+nav.navbar a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 18px;
+    transition: 0.3s;
+}
+
+nav.navbar a:hover {
+    color: #00ffff;
+}
+
+/* Toggle icon hidden by default */
+.menu-toggle {
+    display: none;
+    font-size: 28px;
+    color: #fff;
+    cursor: pointer;
+}
+
+/* Responsive Navbar */
+@media (max-width: 768px) {
+    nav.navbar {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        background: #111;
+        padding: 10px 0;
+    }
+
+    nav.navbar.active {
+        display: flex;
+    }
+
+    .menu-toggle {
+        display: block;
+    }
+}
+
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 20px 100px;
+    display: flex;
+    align-items: center;
+    z-index: 99;
+    backdrop-filter: blur(20px);
+}
+
+.logo {
+    color: #fff;
+    font-size: 30px;
+    font-weight: 700;
+    text-decoration: none;
+    margin-right: auto;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    margin-left: 40px;
+}
+ 
+.user-auth {
+    margin-left: 40px;
+}
+
+.user-auth .login-btn-modal {
+    color: white;
+    height: 40px;
+    padding: 0 35px;
+    border: 2px solid white;
+    border-radius: 40px;
+    font-weight: 500;
+    background: transparent;
+    cursor: pointer;
+    transition: .5s ;
+    font-size: 16px;
+}
+
+.user-auth .login-btn-modal:hover {
+    background: white;
+    color: #222;
+}
+
+section {
+    padding: 0 100px;
+    min-height: 100vh;
+    background: url('../Downloadable/Images/background.jpg') no-repeat ;
+    background-size: cover;
+    background-position: center;
+}
+
+section h1 {
+    color: #fff;
+    font-size: 25px;
+    font-weight: 600;
+    position: absolute;
+    bottom: 40px;
+}
+
+.auth-modal {
+    position: fixed;
+    width: 420px;
+    height: 440px;
+    background: rgba(0, 0, 0 ,0 );
+    border: 2px solid rgba(225, 225, 225 ,225 );
+    border-radius: 20px;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(20px);
+    color: #fff;
+    inset: 0;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    transform: scale(0);
+    transition: height 0.2s ease, transform 0.5s ease;
+}
+
+.auth-modal.show {
+    transform: scale(1);
+}
+
+.auth-modal.slide {
+    height: 520px;
+}
+
+.auth-modal .form-box {
+    width: 100%;
+    padding: 40px;
+}
+
+.auth-modal .form-box.login,
+.auth-modal.slide .form-box.register {
+    transform: translateX(0);
+    transition: transform .18s ease;
+}
+
+.auth-modal.slide .form-box.login {
+    transform: translateX(-400px);
+    transition: none;
+}
+
+.auth-modal .form-box.register {
+    position: absolute;
+    transform: translateX(400px);
+}
+
+.form-box h2 {
+    font-size: 35px;
+    text-align: center;
+}
+
+.input-box {
+    width: 100%;
+    margin: 30px 0;
+    position: relative;
+    height: 50px;
+}
+
+.input-box input {
+    width: 100%;
+    height: 100%;
+    padding: 20px 45px 20px 20px;
+    border: 2px solid rgba(225, 225, 225, 0.3);
+    border-radius: 40px;
+    background: transparent;
+    color: #fff;
+    font-size: 16px;
+    outline: none;
+}
+
+.input-box input::placeholder {
+    color: #fff;
+}
+
+.input-box i {
+    position: absolute;
+    top: 50%;
+    right: 20px; 
+    transform: translateY(-50%);
+    font-size: 20px;
+}
+
+.btn {
+    width: 100%;
+    height: 45px;
+    border: none;
+    border-radius: 40px;
+    background: #fff;
+    color: #222;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-box p {
+    text-align: center;
+    margin : 20px 0 10px;
+    font-size: 14.5px;
+}
+
+.form-box p a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.form-box p a:hover {
+    text-decoration: underline;
+}
+
+.auth-modal .close-btn-modal {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 45px;
+    height: 45px;
+    background: #fff;
+    color: #222;
+    font-size: 35px;
+    border: none;
+    border-bottom-left-radius: 20px;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.profile-box .avatar-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #fff;
+    line-height: 40px;
+    text-align: center;
+    font-size: 20px;
+    color: #222;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.profile-box .dropdown {
+    position: absolute;
+    top: 85px;
+    right: 100px;
+    background: #fff;
+    border-radius: 8px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    transform: translateY(20px);
+    opacity: 0;
+    pointer-events: none;
+    transition: .5s
+}
+
+.profile-box.show .dropdown {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.profile-box .dropdown a {
+    color: #222;
+    text-decoration: none;
+    padding: 6px 12px;
+    font-weight: 500;
+    border-radius: 4px;
+    transition: .2s;
+    margin: 2px 0;
+}
+
+.profile-box .dropdown a:hover {
+    background: #eee;
+}
+
+.alert-box {
+    position: fixed;
+    top: 35px;
+    margin: 0 auto;
+    inset: 0;
+    width: 350px;
+    height: 70px;
+    background: #fff;
+    border-radius: 6px;
+    padding: 0 15px;
+    z-index: 100;
+    overflow: hidden;
+    transform: translateY(calc(-100% - 35px));
+    transition: .5s ease;
+}
+
+.alert-box.show {
+    transform: translateY(0);
+}
+
+.alert {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    color: #222;
+    font-weight: 500;
+}
+
+.alert::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 5px;
+    bottom: 0;
+    left: 0;
+    background: #0abf30;
+    animation: progress 6s linear forwards;
+}
+
+.alert.error::after {
+    background: #f00;
+}
+
+@keyframes progress {
+    100% {
+        width: 0;
+    }
+}
+
+.alert i {
+    font-size: 35px;
+    margin-right: 8px;
+    color: #0abf30;
+}
+
+.alert.error i {
+    color: #f00;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=poppins:wght@400;500;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 20px 100px;
+    display: flex;
+    align-items: center;
+    z-index: 99;
+    backdrop-filter: blur(20px);
+}
+
+.logo {
+    color: #fff;
+    font-size: 30px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+/* ===== Add other existing CSS rules here if any ===== */
+
+/* 🔽 RESPONSIVE STYLES 🔽 */
+@media (max-width: 1024px) {
+    header {
+        padding: 20px 50px;
+    }
+
+    .logo {
+        font-size: 24px;
+    }
+}
+
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 15px 20px;
+    }
+
+    .logo {
+        font-size: 20px;
+        margin-bottom: 10px;
+    }
+
+    nav {
+        flex-direction: column;
+        align-items: flex-start;
+        right: 20px;
+    }
+
+    nav a {
+        margin: 5px 0;
+        font-size: 16px;
+    }
+
+    body {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        font-size: 14px;
+    }
+
+    header {
+        padding: 10px 15px;
+    }
+
+    .logo {
+        font-size: 18px;
+    }
+}

@@ -1,0 +1,33 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.18.0/matter.min.js"></script>
+<canvas id="physics-canvas"></canvas>
+<script>
+  const engine = Matter.Engine.create();
+  const render = Matter.Render.create({
+    canvas: document.getElementById('physics-canvas'),
+    engine: engine,
+    options: { width: 300, height: 300, wireframes: false }
+  });
+
+  const ground = Matter.Bodies.rectangle(150, 290, 300, 20, { isStatic: true });
+  const ball = Matter.Bodies.circle(150, 50, 15, { restitution: 0.8 });
+
+  Matter.Composite.add(engine.world, [ground, ball]);
+  Matter.Engine.run(engine);
+  Matter.Render.run(render);
+
+  setInterval(() => {
+    Matter.Composite.add(engine.world, Matter.Bodies.circle(
+      Math.random() * 300, 0, 10, { restitution: 0.7 }
+    ));
+  }, 1000);
+</script>
+<style>
+  *{
+    background-color: black;
+  }
+</style>
+<!--🔥 Day 13: Physics-Based Falling Balls (Matter.js)
+(Simulates gravity and collisions)
+
+📌 Hook: "Physics in the browser? YES! 🏀 #MatterJS #CreativeCoding"
+

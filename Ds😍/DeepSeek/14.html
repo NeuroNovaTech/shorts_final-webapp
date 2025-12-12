@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>3D Card Hover Effect</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      height: 100vh;
+      background: linear-gradient(135deg, #e0eafc, #cfdef3);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: sans-serif;
+    }
+
+    .card {
+      width: 300px;
+      height: 300px;
+      background: url('5.jpg') center/cover no-repeat;
+      border-radius: 20px;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.1s ease;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      will-change: transform;
+      cursor: pointer;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: inherit;
+      background: inherit;
+      transform: translateZ(-40px) scale(1.1);
+      filter: blur(20px);
+      opacity: 0.6;
+      z-index: -1;
+    }
+
+    .glow {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: inherit;
+      pointer-events: none;
+      background: radial-gradient(circle at center, rgba(255,255,255,0.2), transparent 60%);
+      mix-blend-mode: overlay;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .card:hover .glow {
+      opacity: 1;
+    }
+
+    @media (hover: none) and (pointer: coarse) {
+      .card {
+        transform: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card" id="card">
+    <div class="glow"></div>
+  </div>
+
+  <script>
+    const card = document.getElementById('card');
+
+    document.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+
+      const rotateX = -(y - centerY) / 15;
+      const rotateY = (x - centerX) / 15;
+
+      card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    });
+
+    document.addEventListener('mouseleave', () => {
+      card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg)`;
+    });
+  </script>
+
+</body>
+</html>
+
+<!--Day 14: 3D Card Hover Effect
+(Trending: Parallax Depth Effects)
+
+"This 3D effect will BLOW MINDS! 🤯 (Parallax magic)"
+

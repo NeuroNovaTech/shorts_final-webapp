@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>3D Portfolio Card</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(45deg, #1a1a2e, #16213e);
+      perspective: 1000px;
+      overflow: hidden;
+    }
+    
+    .card {
+      width: 400px;
+      height: 600px;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.5s;
+      cursor: pointer;
+    }
+    
+    .card-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #ffffff 0%, #f3f3f3 100%);
+    }
+    
+    .card-front {
+      padding: 30px;
+      text-align: center;
+    }
+    
+    .profile-img {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 5px solid rgba(255, 255, 255, 0.5);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      margin-bottom: 20px;
+    }
+    
+    h1 {
+      margin: 0;
+      font-family: 'Arial', sans-serif;
+      color: #333;
+      font-size: 28px;
+    }
+    
+    p {
+      color: #666;
+      font-family: 'Arial', sans-serif;
+      line-height: 1.6;
+    }
+    
+    .social-icons {
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
+    }
+    
+    .social-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #4a69bd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 20px;
+      transition: all 0.3s;
+    }
+    
+    .social-icon:hover {
+      transform: translateY(-5px);
+      background: #3c6382;
+    }
+    
+    .glow {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 20px;
+      background: radial-gradient(circle at center, rgba(255, 255, 255, 0.8), transparent 70%);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    
+    .card:hover .glow {
+      opacity: 0.3;
+    }
+  </style>
+</head>
+<body>
+  <div class="card" id="card">
+    <div class="glow"></div>
+    <div class="card-face card-front">
+      <img src="https://randomuser.me/api/portraits/men/32.jpg" class="profile-img">
+      <h1>John Doe</h1>
+      <p>Senior Web Developer</p>
+      <p>Creating interactive experiences with cutting-edge web technologies</p>
+      <div class="social-icons">
+        <div class="social-icon">in</div>
+        <div class="social-icon">git</div>
+        <div class="social-icon">tw</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const card = document.getElementById('card');
+    
+    document.addEventListener('mousemove', (e) => {
+      const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
+      const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
+      
+      card.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+      
+      // Glow effect follows mouse
+      const glow = card.querySelector('.glow');
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      glow.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(255, 255, 255, 0.8), transparent 70%)`;
+    });
+    
+    // Reset when mouse leaves
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = 'rotateY(0deg) rotateX(0deg)';
+      card.querySelector('.glow').style.opacity = '0';
+    });
+  </script>
+</body>
+</html>
+<!--Day 7: 3D Portfolio Card (CSS 3D Transform + Interactive Tilt)
+Effect: Advanced 3D card with parallax tilt effect and dynamic lighting.

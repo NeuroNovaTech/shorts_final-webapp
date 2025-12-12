@@ -1,0 +1,12 @@
+.glitch {
+    position: relative;
+    display: inline-block;
+}
+.glitch::before,
+.glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    left: 0;
+    top: 0;
+    clip: rect(0, 9999px, 0, 0);
+}

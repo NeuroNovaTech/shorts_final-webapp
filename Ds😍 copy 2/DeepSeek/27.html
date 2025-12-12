@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GSAP Animation - Left Side</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      align-items: center;      /* Vertical center */
+      justify-content: flex-start; /* Left align */
+      padding-left: 50px;       /* Add spacing from left edge */
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 20px;
+    }
+
+    .box {
+      width: 100px;
+      height: 100px;
+      background-color: #4CAF50;
+      border-radius: 12px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+      transition: background-color 0.3s ease;
+    }
+
+    #animate {
+      padding: 12px 24px;
+      font-size: 16px;
+      background: #8d3dae;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    #animate:hover {
+      background: #a29bfe;
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="box"></div>
+    <button id="animate">Animate</button>
+  </div>
+
+  <script>
+    document.getElementById('animate').addEventListener('click', () => {
+      gsap.to(".box", {
+        duration: 1.8,
+        x: 300,                    // Animates to the right
+        rotation: 720,
+        scale: 1.2,
+        ease: "bounce.out",
+        backgroundColor: "#8d3dae",
+        borderRadius: "50%",
+        yoyo: true,
+        repeat: 1
+      });
+    });
+  </script>
+
+</body>
+</html>
+
+<!--Example: Simple GSAP Animation
+

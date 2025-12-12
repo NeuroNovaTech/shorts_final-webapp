@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>jQuery DOM Manipulation</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    body {
+      background: linear-gradient(to right, #2c3e50, #4ca1af);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      color: white;
+    }
+
+    #btn {
+      padding: 12px 24px;
+      font-size: 18px;
+      background: #00cec9;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      transition: all 0.3s ease;
+    }
+
+    #btn:hover {
+      background: #0984e3;
+      transform: scale(1.05);
+    }
+
+    #content {
+      margin-top: 30px;
+      font-size: 32px;
+      font-weight: bold;
+      text-shadow: 0 0 10px #ffffffaa;
+      transition: all 0.3s ease;
+    }
+  </style>
+</head>
+<body>
+
+  <button id="btn">Click Me</button>
+  <div id="content">Hello World</div>
+
+  <script>
+    $(document).ready(function () {
+      $("#btn").click(function () {
+        $("#content").fadeOut(500).delay(300).fadeIn(500);
+      });
+    });
+  </script>
+
+</body>
+</html>
+
+<!--Example: Simple jQuery DOM Manipulation

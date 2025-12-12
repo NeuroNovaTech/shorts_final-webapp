@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI Digit Recognizer</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #f0f0f0;
+      font-family: Arial, sans-serif;
+      user-select: none;
+    }
+    canvas {
+      border: 2px solid #333;
+      background: white;
+      margin-bottom: 20px;
+      touch-action: none;
+    }
+    button {
+      padding: 10px 20px;
+      background: #ff6b6b;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-bottom: 10px;
+      font-size: 1rem;
+    }
+    #prediction {
+      font-size: 1.5rem;
+      margin-top: 10px;
+    }
+    #probabilities {
+      margin-top: 10px;
+      font-family: monospace;
+      max-width: 280px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h2>Draw a number (0-9):</h2>
+  <canvas id="canvas" width="280" height="280"></canvas>
+  <button id="clearBtn">Clear</button>
+  <div id="prediction">AI thinks it's: ...</div>
+  <pre id="probabilities"></pre>
+
+  <!-- TensorFlow.js -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.18.0/dist/tf.min.js"></script>
+
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const clearBtn = document.getElementById('clearBtn');
+    const predictionEl = document.getElementById('prediction');
+    const probabilitiesEl = document.getElementById('probabilities');
+
+    // Prepare canvas for drawing
+    ctx.lineWidth = 20;
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = '#000';
+
+    let isDrawing = false;
+
+    function startDrawing(e) {
+      isDrawing = true;
+      ctx.beginPath();
+      ctx.moveTo(e.offsetX, e.offsetY);
+      e.preventDefault();
+    }
+
+    function draw(e) {
+      if (!isDrawing) return;
+      ctx.lineTo(e.offsetX, e.offsetY);
+      ctx.stroke();
+      e.preventDefault();
+    }
+
+    function stopDrawing(e) {
+      if (!isDrawing) return;
+      isDrawing = false;
+      e.preventDefault();
+      predict();
+    }
+
+    canvas.addEventListener('mousedown', startDrawing);
+    canvas.addEventListener('touchstart', e => {
+      const touch = e.touches[0];
+      const rect = canvas.getBoundingClientRect();
+      const offsetX = touch.clientX - rect.left;
+      const offsetY = touch.clientY - rect.top;
+      startDrawing({ offsetX, offsetY, preventDefault: () => {} });
+      e.preventDefault();
+    }, { passive: false });
+
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('touchmove', e => {
+      if (!isDrawing) return;
+      const touch = e.touches[0];
+      const rect = canvas.getBoundingClientRect();
+      const offsetX = touch.clientX - rect.left;
+      const offsetY = touch.clientY - rect.top;
+      draw({ offsetX, offsetY, preventDefault: () => {} });
+      e.preventDefault();
+    }, { passive: false });
+
+    canvas.addEventListener('mouseup', stopDrawing);
+    canvas.addEventListener('mouseout', stopDrawing);
+    canvas.addEventListener('touchend', stopDrawing);
+
+    clearBtn.addEventListener('click', () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      predictionEl.textContent = "AI thinks it's: ...";
+      probabilitiesEl.textContent = '';
+    });
+
+    // Load the pre-trained MNIST model from TF.js examples
+    // Source: https://github.com/tensorflow/tfjs-models/tree/master/mnist
+    let model;
+
+    async function loadModel() {
+      predictionEl.textContent = "Loading model...";
+      // This hosted model URL is from TFJS official mnist demo
+      model = await tf.loadLayersModel('https://storage.googleapis.com/tfjs-models/tfjs/mnist/model.json');
+      predictionEl.textContent = "Model loaded. Draw a digit!";
+    }
+    loadModel();
+
+    // Preprocess the canvas image: resize 28x28 grayscale and normalize
+    function preprocessCanvas(image) {
+      return tf.tidy(() => {
+        let tensor = tf.browser.fromPixels(image, 1); // Grayscale
+        tensor = tf.image.resizeBilinear(tensor, [28, 28]);
+        tensor = tf.cast(tensor, 'float32');
+        tensor = tf.div(tensor, 255.0);
+        tensor = tf.sub(1, tensor); // invert colors: background=0, stroke=1 (MNIST style)
+        tensor = tensor.expandDims(0); // batch dimension
+        return tensor;
+      });
+    }
+
+    async function predict() {
+      if (!model) return;
+      // Get image data from canvas
+      const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+      const input = preprocessCanvas(imgData);
+
+      const predictions = model.predict(input);
+      const data = await predictions.data();
+
+      // Find highest probability digit
+      let maxProb = 0;
+      let maxIndex = 0;
+      for (let i = 0; i < data.length; i++) {
+        if (data[i] > maxProb) {
+          maxProb = data[i];
+          maxIndex = i;
+        }
+      }
+
+      predictionEl.textContent = `AI thinks it's: ${maxIndex} (confidence: ${(maxProb*100).toFixed(2)}%)`;
+
+      // Show all probabilities nicely formatted
+      let probText = '';
+      for(let i=0; i<data.length; i++) {
+        probText += `${i}: ${(data[i]*100).toFixed(2)}%\n`;
+      }
+      probabilitiesEl.textContent = probText;
+
+      tf.dispose([input, predictions]);
+    }
+  </script>
+</body>
+</html>
+
+<!--Hook Overlay:
+"Turn sketches into DIGITS with AI! ✍️ (TensorFlow.js demo)"
+Note: For a fully functional version, you’d need to load a pre-trained MNIST model.
+Day 26: AI Drawing Canvas (Sketch Recognition) (Trending: ML in Browser)-->
+

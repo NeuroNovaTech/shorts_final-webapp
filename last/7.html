@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merry Christmas</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: black;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Snow canvas */
+        #snowCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+
+        .content {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #fff;
+            z-index: 10;
+            width: 90%;
+            padding: 0 10px;
+        }
+
+        .title {
+            font-size: clamp(2.2rem, 6vw, 4.2rem);
+            font-weight: 700;
+            color: #ff4d4d;
+            text-shadow: 0 0 20px red, 0 0 40px #ff8080;
+            animation: glow 2.5s infinite ease-in-out;
+        }
+
+        .title span {
+            color: #2ecc71;
+            text-shadow: 0 0 20px #2ecc71, 0 0 40px #7dff8a;
+        }
+
+        #message {
+            margin-top: 20px;
+            font-size: clamp(1rem, 4vw, 1.8rem);
+            opacity: 0;
+            color: #ffeaa7;
+            text-shadow: 0 0 8px gold;
+            animation: fadeIn 2s forwards 2s;
+            line-height: 1.4;
+        }
+
+        @keyframes glow {
+            0% { text-shadow: 0 0 15px red; }
+            50% { text-shadow: 0 0 40px gold; }
+            100% { text-shadow: 0 0 15px red; }
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="snowCanvas"></canvas>
+
+<div class="content">
+    <h1 class="title">🎄 Merry <span>Christmas</span> 🎅</h1>
+    <p id="message"></p>
+</div>
+
+<script>
+    /* ---------- TYPEWRITER MESSAGE ---------- */
+    const text = "May your Christmas sparkle with love, joy, peace, and warm memories! 🎁✨";
+    let index = 0;
+
+    function typeWriter() {
+        if (index < text.length) {
+            document.getElementById("message").innerHTML += text.charAt(index);
+            index++;
+            setTimeout(typeWriter, 50);
+        }
+    }
+    setTimeout(typeWriter, 1500);
+
+    /* ---------- SNOW ANIMATION ---------- */
+    const canvas = document.getElementById("snowCanvas");
+    const ctx = canvas.getContext("2d");
+
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+
+    let snowflakes = [];
+
+    class Snow {
+        constructor() {
+            this.x = Math.random() * canvas.width;
+            this.y = Math.random() * canvas.height;
+            this.radius = Math.random() * 3 + 1;
+            this.speedY = Math.random() * 1 + 0.5;
+            this.speedX = Math.random() * 0.5 - 0.25;
+        }
+
+        update() {
+            this.y += this.speedY;
+            this.x += this.speedX;
+
+            if (this.y > canvas.height) {
+                this.y = -5;
+                this.x = Math.random() * canvas.width;
+            }
+        }
+
+        draw() {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+            ctx.fillStyle = "white";
+            ctx.fill();
+        }
+    }
+
+    function createSnowflakes(count) {
+        for (let i = 0; i < count; i++) {
+            snowflakes.push(new Snow());
+        }
+    }
+
+    createSnowflakes(200);
+
+    function animateSnow() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        snowflakes.forEach(flake => {
+            flake.update();
+            flake.draw();
+        });
+        requestAnimationFrame(animateSnow);
+    }
+
+    animateSnow();
+
+    window.addEventListener("resize", resizeCanvas);
+</script>
+
+</body>
+</html>
+

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gradient Border Card</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #222;
+            font-family: Arial;
+        }
+        .card {
+            width: 300px;
+            height: 400px;
+            background: #222;
+            border-radius: 20px;
+            position: relative;
+            padding: 20px;
+            box-sizing: border-box;
+            color: white;
+            text-align: center;
+        }
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            background: linear-gradient(45deg, #ff6b6b, #48dbfb, #1dd1a1, #feca57);
+            background-size: 400% 400%;
+            border-radius: 25px;
+            z-index: -1;
+            animation: gradient 4s ease infinite;
+        }
+        .card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: inherit;
+            border-radius: 20px;
+            z-index: -1;
+        }
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        h1 {
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>CSS Magic</h1>
+        <p>This gradient border is created with pure CSS—no extra divs!</p>
+    </div>
+</body>
+</html>
+<!--📅 Day 23: Animated Gradient Border Card (CSS Only)
+Title: "Gradient Border Trick Everyone Wants! 🌈 #CSS"
+📌 Description:
+"Create animated gradient borders WITHOUT extra HTML elements! A CSS trick every developer needs. Like & Subscribe for more CSS secrets! #CSS #WebDesign"
+
+🏷️ Tags:
+#CSS #Gradient #Border #Animation #Frontend

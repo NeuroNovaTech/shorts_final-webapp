@@ -1,0 +1,44 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/ScrollTrigger.min.js"></script>
+
+<div class="box"></div>
+
+<style>
+  body {
+    height: 200vh;
+    margin: 0;
+    background-color: black;
+  }
+  .box {
+    width: 100px;
+    height: 100px;
+    background: #ff00cc;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+</style>
+
+<script>
+  gsap.registerPlugin(ScrollTrigger);
+
+  gsap.to(".box", {
+    rotation: 360,
+    scale: 2,
+    backgroundColor: "#00ffcc",
+    ease: "none",
+    scrollTrigger: {
+      start: "top top",
+      end: "bottom bottom",
+      scrub: true,
+      // Optional: markers: true, // uncomment to debug
+    }
+  });
+</script>
+
+<!--🔥 Day 11: GSAP Scroll-Triggered Animation
+(A smooth animation that triggers when scrolling)
+
+📌 Hook: "Smooth scroll animations made EASY with GSAP! 🎢 #Frontend"
+

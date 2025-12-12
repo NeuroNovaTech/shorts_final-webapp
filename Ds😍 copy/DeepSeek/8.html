@@ -1,0 +1,87 @@
+<!-- Day 12: Attractive Animated Counter -->
+<div class="counter-container">
+  <div class="counter" data-target="1000">0</div>
+  <p class="label">Followers</p>
+</div>
+
+<script>
+  const counters = document.querySelectorAll('.counter');
+  
+  counters.forEach(counter => {
+    const target = +counter.getAttribute('data-target');
+    let count = 0;
+
+    const updateCount = () => {
+      const increment = target / 200; // smoother animation
+      if (count < target) {
+        count += increment;
+        counter.textContent = Math.ceil(count);
+        requestAnimationFrame(updateCount);
+      } else {
+        counter.textContent = target;
+        counter.classList.add('completed');
+      }
+    };
+
+    updateCount();
+  });
+</script>
+
+<style>
+  body {
+    background: #0f1117;
+    font-family: 'Segoe UI', sans-serif;
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+  }
+
+  .counter-container {
+    text-align: center;
+    animation: fadeIn 1s ease forwards;
+  }
+
+.counter {
+  font-size: 5rem;
+  font-weight: 900;
+  background: linear-gradient(90deg, #4a00e0, #00f5ff);
+  -webkit-background-clip: text;
+  background-clip: text; /* <-- NEW */
+  -webkit-text-fill-color: transparent;
+  color: transparent;     /* <-- NEW fallback */
+  animation: pulse 1s infinite ease-in-out;
+  transition: transform 0.3s ease;
+}
+
+
+  .counter.completed {
+    animation: none;
+    transform: scale(1.1);
+  }
+
+  .label {
+    font-size: 1.5rem;
+    margin-top: 10px;
+    color: #ccc;
+    letter-spacing: 1px;
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      transform: scale(1);
+      text-shadow: 0 0 10px #00f5ff88, 0 0 20px #4a00e088;
+    }
+    50% {
+      transform: scale(1.05);
+      text-shadow: 0 0 20px #00f5ff, 0 0 30px #4a00e0;
+    }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+</style>

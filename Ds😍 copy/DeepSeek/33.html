@@ -1,0 +1,49 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<div>
+  <p>Say "left", "right", "up", or "down"</p>
+  <div id="gameContainer"></div>
+</div>
+<script>
+  // Setup Three.js scene
+  const container = document.getElementById('gameContainer');
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
+  const renderer = new THREE.WebGLRenderer();
+  renderer.setSize(300, 300);
+  container.appendChild(renderer.domElement);
+  
+  // Create a cube
+  const geometry = new THREE.BoxGeometry();
+  const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+  const cube = new THREE.Mesh(geometry, material);
+  scene.add(cube);
+  camera.position.z = 5;
+  
+  // Voice recognition
+  const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+  recognition.lang = 'en-US';
+  recognition.interimResults = false;
+  
+  recognition.onresult = (event) => {
+    const command = event.results[0][0].transcript.toLowerCase();
+    if (command.includes('left')) cube.position.x -= 0.5;
+    if (command.includes('right')) cube.position.x += 0.5;
+    if (command.includes('up')) cube.position.y += 0.5;
+    if (command.includes('down')) cube.position.y -= 0.5;
+  };
+  
+  recognition.start();
+  recognition.onend = () => recognition.start(); // Restart when stopped
+  
+  // Animation loop
+  function animate() {
+    requestAnimationFrame(animate);
+    cube.rotation.x += 0.01;
+    cube.rotation.y += 0.01;
+    renderer.render(scene, camera);
+  }
+  animate();
+</script>
+<!--🔥 Day 27: Voice-Controlled 3D Game
+📌 Hook: "Control a 3D game with your VOICE! 🎙️ #ThreeJS #SpeechRecognition"-->
+

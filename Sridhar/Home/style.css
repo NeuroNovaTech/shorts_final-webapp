@@ -1,0 +1,271 @@
+/* Global Reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+  font-family: 'Segoe UI', sans-serif;
+  color: white;
+  height: 100%;
+  background-color: #000;
+}
+
+/* Glassy Navbar */
+header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 60px;
+  background-color: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  z-index: 999;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Navbar container */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+  padding: 0 30px;
+}
+
+/* Logo Section */
+.logo-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo {
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.logo-text {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+/* Right Side Actions */
+.right-actions {
+  display: none;
+  align-items: center;
+  gap: 15px;
+}
+
+/* Desktop Nav */
+.nav-area {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.nav-links {
+  display: flex;
+  list-style: none;
+  gap: 20px;
+}
+
+.nav-links li a {
+  text-decoration: none;
+  color: white;
+  font-weight: 500;
+}
+
+/* Login Buttons */
+.login-btn {
+  padding: 8px 16px;
+  background-color: #00bcd4;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.desktop-login {
+  display: block;
+}
+
+.mobile-right {
+  display: none;
+}
+
+/* ✅ Apple-Style Hamburger Animation */
+.hamburger {
+  display: none;
+  position: relative;
+  width: 32px;
+  height: 24px;
+  cursor: pointer;
+  z-index: 1001;
+}
+
+/* Hamburger Lines */
+.lines {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.bar {
+  position: absolute;
+  width: 100%;
+  height: 3px;
+  background-color: white;
+  border-radius: 2px;
+  transition: all .0s ease-in-out;
+}
+
+.bar1 {
+  top: 6px;
+}
+
+.bar2 {
+  bottom: 6px;
+}
+
+/* Cross X Icon (hidden by default) */
+.cross {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .0s ease-in-out;
+}
+
+.cross-line {
+  position: absolute;
+  width: 100%;
+  height: 3px;
+  background-color: white;
+  border-radius: 2px;
+}
+
+.cross-line1 {
+  top: 10.5px;
+  transform: rotate(45deg);
+}
+
+.cross-line2 {
+  top: 10.5px;
+  transform: rotate(-45deg);
+}
+
+/* Active (X) State */
+.hamburger.active .bar1 {
+  top: 10.5px;
+  opacity: 0;
+}
+
+.hamburger.active .bar2 {
+  bottom: 10.5px;
+  opacity: 0;
+}
+
+.hamburger.active .cross {
+  opacity: 1;
+}
+
+/* Mobile Menu */
+.mobile-menu {
+  position: fixed;
+  top: 60px;
+  right: -100%;
+  width: 70vw;
+  max-width: 300px;
+  height: calc(100vh - 60px);
+  background-color: #222;
+  padding: 30px 20px;
+  z-index: 998;
+  transition: right 0.4s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.mobile-menu.active {
+  right: 0;
+}
+
+.mobile-menu ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 10px;
+}
+
+.mobile-menu li {
+  margin: 20px 0;
+}
+
+.mobile-menu a {
+  color: white;
+  text-decoration: none;
+  font-size: 1.1rem;
+}
+
+/* Hero Section */
+.hero {
+  width: 100vw;
+  height: 100vh;
+  background-image: url('background.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Hero Overlay */
+.overlay {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 60px 20px 0; /* push down content */
+}
+
+.overlay h1 {
+  font-size: 3rem;
+  margin-bottom: 20px;
+}
+
+.overlay p {
+  font-size: 1.2rem;
+  max-width: 600px;
+}
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+  .nav-area,
+  .desktop-login {
+    display: none;
+  }
+
+  .right-actions {
+    display: flex;
+    margin-left: auto;
+  }
+
+  .mobile-right {
+    display: block;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+}

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Santa Flying in the Sky</title>
+
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: linear-gradient(to bottom, #001020, #000);
+            height: 100vh;
+            width: 100vw;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Snow Canvas */
+        #snowCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        /* Sky Elements */
+        .moon {
+            position: fixed;
+            top: 60px;
+            right: 80px;
+            width: 120px;
+            height: 120px;
+            background: #fff6cc;
+            border-radius: 50%;
+            box-shadow: 0 0 25px #fff6cc;
+            z-index: 2;
+        }
+
+        .stars {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .stars span {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 2s infinite ease-in-out;
+        }
+
+        @keyframes twinkle {
+
+            0%,
+            100% {
+                opacity: 0.3;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        /* Santa Flying */
+        .santa {
+            position: fixed;
+            top: 35%;
+            left: -300px;
+            width: 300px;
+            z-index: 5;
+            animation: flyLR 10s linear infinite;
+            display: flex;
+            align-items: center;
+        }
+
+        .santa img {
+            width: 300px;
+            filter: drop-shadow(0 0 10px red);
+        }
+
+        @keyframes flyLR {
+            0% {
+                transform: translateX(-350px);
+            }
+
+            50% {
+                transform: translateX(calc(100vw + 350px));
+            }
+
+            100% {
+                transform: translateX(-350px);
+            }
+        }
+
+        /* Clouds */
+        .cloud {
+            position: fixed;
+            background: #fff3;
+            border-radius: 50px;
+            filter: blur(4px);
+            z-index: 2;
+            animation: drift 25s linear infinite;
+        }
+
+        .cloud.small {
+            width: 120px;
+            height: 35px;
+            top: 180px;
+            left: 20%;
+            animation-duration: 29s;
+        }
+
+        .cloud.medium {
+            width: 200px;
+            height: 55px;
+            top: 260px;
+            left: 65%;
+            animation-duration: 35s;
+        }
+
+        .cloud.large {
+            width: 260px;
+            height: 70px;
+            top: 120px;
+            left: 35%;
+            animation-duration: 40s;
+        }
+
+        @keyframes drift {
+            0% {
+                transform: translateX(-200px);
+            }
+
+            100% {
+                transform: translateX(120vw);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <canvas id="snowCanvas"></canvas>
+
+    <div class="moon"></div>
+
+    <div class="stars">
+        <!-- 40 Random Stars -->
+        <script>
+            for (let i = 0; i < 40; i++) {
+                document.write(`<span style="
+                left:${Math.random() * 100}%;
+                top:${Math.random() * 100}%;
+                animation-duration:${1.5 + Math.random() * 2}s;
+            "></span>`);
+            }
+        </script>
+    </div>
+
+    <!-- Santa Flying -->
+    <div class="santa">
+        <img src="../pngwing.com - Copy.png" alt="Santa Flying">
+    </div>
+
+    <!-- Clouds -->
+    <div class="cloud small"></div>
+    <div class="cloud medium"></div>
+    <div class="cloud large"></div>
+
+    <script>
+        /* -----------------------------
+           ❄ SNOW FALLING BACKGROUND
+        ----------------------------- */
+
+        const canvas = document.getElementById("snowCanvas");
+        const ctx = canvas.getContext("2d");
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resize();
+
+        let snow = [];
+        class Snowflake {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 3 + 1;
+                this.speed = Math.random() * 1.2 + 0.6;
+            }
+            update() {
+                this.y += this.speed;
+                if (this.y > canvas.height) {
+                    this.y = -5;
+                    this.x = Math.random() * canvas.width;
+                }
+            }
+            draw() {
+                ctx.fillStyle = "white";
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+        for (let i = 0; i < 200; i++) snow.push(new Snowflake());
+
+        function animateSnow() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            snow.forEach(flake => { flake.update(); flake.draw(); });
+            requestAnimationFrame(animateSnow);
+        }
+        animateSnow();
+        window.addEventListener("resize", resize);
+    </script>
+
+</body>
+
+</html>

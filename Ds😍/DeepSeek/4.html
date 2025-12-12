@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background: #000000;
+    }
+    
+    input {
+      padding: 15px;
+      width: 300px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      font-size: 18px;
+    }
+    
+    .strength-meter {
+      height: 10px;
+      width: 300px;
+      margin-top: 10px;
+      border-radius: 5px;
+      background: #eee;
+      overflow: hidden;
+    }
+    
+    .strength-fill {
+      height: 100%;
+      width: 0%;
+      transition: width 0.4s, background 0.4s;
+    }
+  </style>
+</head>
+<body>
+  <input type="password" id="password" placeholder="Type your password...">
+  <div class="strength-meter">
+    <div class="strength-fill" id="strengthFill"></div>
+  </div>
+  
+  <script>
+    const passwordInput = document.getElementById('password');
+    const strengthFill = document.getElementById('strengthFill');
+    
+    passwordInput.addEventListener('input', () => {
+      const password = passwordInput.value;
+      let strength = 0;
+      
+      if (password.length > 0) strength += 25;
+      if (password.length > 6) strength += 25;
+      if (/[A-Z]/.test(password)) strength += 25;
+      if (/[0-9!@#$%^&*]/.test(password)) strength += 25;
+      
+      strengthFill.style.width = `${strength}%`;
+      strengthFill.style.background = strength < 50 ? '#ff4757' : 
+                                     strength < 75 ? '#ffa502' : '#2ed573';
+    });
+  </script>
+</body>
+</html>
+<!--Day 4: Password Strength Visualizer
+(Trending: Interactive Feedback)
+
+Hook Text Overlay: "Watch the bar react LIVE as you type! 🔑 (JS DOM magic)"
+

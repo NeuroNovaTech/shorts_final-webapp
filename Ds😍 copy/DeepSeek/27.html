@@ -1,0 +1,39 @@
+<div>
+  <video id="localVideo" autoplay muted width="200"></video>
+  <video id="remoteVideo" autoplay width="200"></video>
+  <button id="startCall">Start Call</button>
+</div>
+<script>
+  const localVideo = document.getElementById('localVideo');
+  const remoteVideo = document.getElementById('remoteVideo');
+  const startButton = document.getElementById('startCall');
+  
+  let localStream;
+  let peerConnection;
+  
+  startButton.addEventListener('click', async () => {
+    localStream = await navigator.mediaDevices.getUserMedia({video: true, audio: true});
+    localVideo.srcObject = localStream;
+    
+    // Simple peer connection (in real app, you'd need signaling)
+    peerConnection = new RTCPeerConnection();
+    peerConnection.addTrack(localStream.getVideoTracks()[0], localStream);
+    peerConnection.addTrack(localStream.getAudioTracks()[0], localStream);
+    
+    peerConnection.ontrack = (event) => {
+      remoteVideo.srcObject = event.streams[0];
+    };
+    
+    // For demo purposes only - real apps need proper signaling
+    peerConnection.createOffer()
+      .then(offer => peerConnection.setLocalDescription(offer))
+      .then(() => {
+        // Normally you'd send the offer to another peer here
+        // For demo, we'll just set it as remote description
+        peerConnection.setRemoteDescription(peerConnection.localDescription);
+      });
+  });
+</script>
+<!--🔥 Day 20: WebRTC Video Chat (Simple Demo)
+📌 Hook: "Build a video chat app with NO backend using WebRTC! 📹 #WebRTC #RealTime"-->
+

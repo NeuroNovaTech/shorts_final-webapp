@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      background: #000000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .neon {
+      font-size: 5rem;
+      font-weight: 800;
+      color: #fff;
+      text-shadow: 
+        0 0 10px #ff00ff,
+        0 0 20px #ff00ff,
+        0 0 40px #ff00ff,
+        0 0 80px #ff00ff;
+      animation: flicker 1.5s infinite alternate;
+    }
+    @keyframes flicker {
+      0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+        text-shadow: 
+          0 0 10px #ff00ff,
+          0 0 20px #00ffff,
+          0 0 40px #00ffff,
+          0 0 80px #ff00ff;
+      }
+      20%, 24%, 55% {
+        text-shadow: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="neon">404</div>
+</body>
+</html>
+<!--Day 8: Neon Glow Text Animation
+(Trending: Cyberpunk/Synthwave Aesthetic)
+
+"Make your text GLOW like a cyberpunk sign! 💜💙 (No JS!)"
+

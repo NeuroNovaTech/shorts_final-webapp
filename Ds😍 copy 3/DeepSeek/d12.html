@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #000;
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        
+        .container {
+            text-align: center;
+            z-index: 10;
+            position: relative;
+        }
+        
+        h1 {
+            color: #3F51B5;
+            text-shadow: 0 0 10px #303F9F;
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+        }
+        
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        
+        .message {
+            color: #C5CAE9;
+            font-size: 1.5rem;
+            margin-top: 20px;
+            text-shadow: 0 0 5px #303F9F;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1></h1>
+        <p class="message"></p>
+    </div>
+    
+    <canvas id="fireworks"></canvas>
+
+    <script>
+        const canvas = document.getElementById('fireworks');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        let rings = [];
+        const colors = ['#3F51B5', '#303F9F', '#7986CB', '#5C6BC0', '#C5CAE9'];
+        
+        class Ring {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.radius = 5;
+                this.maxRadius = Math.random() * 100 + 150;
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+                this.speed = Math.random() * 2 + 1;
+                this.alpha = 1;
+                this.width = Math.random() * 3 + 2;
+            }
+            
+            update() {
+                this.radius += this.speed;
+                this.alpha -= 0.01;
+                
+                if (this.radius > this.maxRadius) {
+                    this.alpha = 0;
+                }
+            }
+            
+            draw() {
+                ctx.globalAlpha = this.alpha;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.strokeStyle = this.color;
+                ctx.lineWidth = this.width;
+                ctx.stroke();
+                
+                // Add glow effect
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.strokeStyle = this.color;
+                ctx.lineWidth = this.width * 0.5;
+                ctx.stroke();
+                
+                ctx.globalAlpha = 1;
+            }
+        }
+        
+        function animate() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            if (Math.random() < 0.03) {
+                const x = Math.random() * canvas.width;
+                const y = Math.random() * canvas.height;
+                rings.push(new Ring(x, y));
+            }
+            
+            rings.forEach((ring, index) => {
+                ring.update();
+                ring.draw();
+                
+                if (ring.alpha <= 0) {
+                    rings.splice(index, 1);
+                }
+            });
+            
+            requestAnimationFrame(animate);
+        }
+        
+        animate();
+        
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>

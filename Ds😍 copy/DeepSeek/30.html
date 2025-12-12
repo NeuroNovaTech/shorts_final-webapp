@@ -1,0 +1,102 @@
+<canvas id="webgpu-canvas" width="300" height="300"></canvas>
+<script type="module">
+  const canvas = document.getElementById('webgpu-canvas');
+
+  if (!navigator.gpu) {
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = 'black';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = 'white';
+    ctx.font = '16px sans-serif';
+    ctx.fillText('WebGPU not supported', 20, canvas.height / 2);
+    throw new Error('WebGPU not supported');
+  }
+
+  async function initWebGPU() {
+    const adapter = await navigator.gpu.requestAdapter();
+    if (!adapter) throw new Error('Failed to get GPU adapter');
+
+    const device = await adapter.requestDevice();
+
+    const context = canvas.getContext('webgpu');
+    const format = navigator.gpu.getPreferredCanvasFormat();
+
+    context.configure({
+      device,
+      format,
+      alphaMode: 'opaque'
+    });
+
+    const pipeline = device.createRenderPipeline({
+      layout: 'auto',
+      vertex: {
+        module: device.createShaderModule({
+          code: `
+            @vertex
+            fn main(@builtin(vertex_index) vertexIndex : u32)
+                -> @builtin(position) vec4f {
+              var pos = array<vec2f, 3>(
+                vec2f(0.0, 0.5),
+                vec2f(-0.5, -0.5),
+                vec2f(0.5, -0.5)
+              );
+              return vec4f(pos[vertexIndex], 0.0, 1.0);
+            }
+          `
+        }),
+        entryPoint: 'main'
+      },
+      fragment: {
+        module: device.createShaderModule({
+          code: `
+            @fragment
+            fn main() -> @location(0) vec4f {
+              return vec4f(1.0, 0.0, 0.0, 1.0); // red triangle
+            }
+          `
+        }),
+        entryPoint: 'main',
+        targets: [{ format }]
+      },
+      primitive: {
+        topology: 'triangle-list'
+      }
+    });
+
+    function render() {
+      const commandEncoder = device.createCommandEncoder();
+      const passEncoder = commandEncoder.beginRenderPass({
+        colorAttachments: [{
+          view: context.getCurrentTexture().createView(),
+          clearValue: [0.1, 0.1, 0.2, 1], // dark background
+          loadOp: 'clear',
+          storeOp: 'store'
+        }]
+      });
+
+      passEncoder.setPipeline(pipeline);
+      passEncoder.draw(3, 1, 0, 0); // draw 3 vertices
+      passEncoder.end();
+      device.queue.submit([commandEncoder.finish()]);
+
+      requestAnimationFrame(render);
+    }
+
+    render();
+  }
+
+  initWebGPU().catch(err => {
+    console.error(err);
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = 'black';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = 'white';
+    ctx.font = '14px sans-serif';
+    ctx.fillText('WebGPU init failed', 20, canvas.height / 2);
+  });
+</script>
+
+
+<!--🔥 Day 24: WebGPU Triangle (Next-Gen Graphics)
+📌 Hook: "The future of web graphics is here! WebGPU vs WebGL 🚀 #WebGPU #NextGenWeb"-->
+

@@ -1,0 +1,378 @@
+/* Reset and Background */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+  font-family: 'Segoe UI', sans-serif;
+  color: white;
+  height: 100%;
+  background: url('background.jpg') no-repeat center center fixed;
+  background-size: cover;
+}
+
+/* Header/Navbar */
+header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 60px;
+  background-color: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  z-index: 999;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+  padding: 0 30px;
+}
+
+.logo-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo {
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.logo-text {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.right-actions {
+  display: none;
+  align-items: center;
+  gap: 15px;
+}
+
+.nav-area {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.nav-links {
+  display: flex;
+  list-style: none;
+  gap: 20px;
+}
+
+.nav-links li a {
+  text-decoration: none;
+  color: white;
+  font-weight: 500;
+}
+
+.login-btn {
+  padding: 8px 16px;
+  background-color: #00bcd4;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.desktop-login {
+  display: block;
+}
+
+.mobile-right {
+  display: none;
+}
+
+.hamburger {
+  display: none;
+  position: relative;
+  width: 32px;
+  height: 24px;
+  cursor: pointer;
+  z-index: 1001;
+}
+
+.lines {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.bar {
+  position: absolute;
+  width: 100%;
+  height: 3px;
+  background-color: white;
+  border-radius: 2px;
+}
+
+.bar1 {
+  top: 6px;
+}
+
+.bar2 {
+  bottom: 6px;
+}
+
+.cross {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.cross-line {
+  position: absolute;
+  width: 100%;
+  height: 3px;
+  background-color: white;
+  border-radius: 2px;
+}
+
+.cross-line1 {
+  top: 10.5px;
+  transform: rotate(45deg);
+}
+
+.cross-line2 {
+  top: 10.5px;
+  transform: rotate(-45deg);
+}
+
+.hamburger.active .bar1,
+.hamburger.active .bar2 {
+  top: 10.5px;
+  bottom: 10.5px;
+  opacity: 0;
+}
+
+.hamburger.active .cross {
+  opacity: 1;
+}
+
+.mobile-menu {
+  position: fixed;
+  top: 60px;
+  right: -100%;
+  width: 70vw;
+  max-width: 300px;
+  height: calc(100vh - 60px);
+  background-color: #222;
+  padding: 30px 20px;
+  z-index: 998;
+  transition: right 0.4s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.mobile-menu.active {
+  right: 0;
+}
+
+.mobile-menu ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 10px;
+}
+
+.mobile-menu li {
+  margin: 20px 0;
+}
+
+.mobile-menu a {
+  color: white;
+  text-decoration: none;
+  font-size: 1.1rem;
+}
+
+/* Store Section */
+.store-container {
+  padding: 100px 20px 40px;
+  max-width: 1200px;
+  margin: auto;
+  text-align: center;
+}
+
+.store-container h2 {
+  margin-bottom: 30px;
+  font-size: 2.4rem;
+}
+
+.search-box {
+  margin: 10px auto 30px;
+  max-width: 400px;
+}
+
+.search-box input {
+  width: 100%;
+  padding: 10px;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: none;
+  outline: none;
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
+}
+
+/* Product Card */
+.product-card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  padding: 20px;
+  transition: transform 0.3s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-6px);
+}
+
+.product-card img {
+  width: 100%;
+  height: auto;
+  max-height: 160px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.product-card h3,
+.product-card p {
+  color: #fff;
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.4);
+  margin: 10px 0;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.demo-btn,
+.buy-btn,
+.download-btn {
+  padding: 8px 16px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border-radius: 4px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.demo-btn {
+  background-color: #fff;
+  color: #000;
+}
+
+.demo-btn:hover {
+  background-color: #ddd;
+}
+
+.buy-btn {
+  background-color: #00bcd4;
+  color: white;
+  border: none;
+}
+
+.buy-btn:hover {
+  background-color: #009bad;
+}
+
+.download-btn {
+  background-color: #4caf50;
+  color: white;
+}
+
+.download-btn:hover {
+  background-color: #3a9641;
+}
+
+.free-tag {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background-color: #00bcd4;
+  color: white;
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  border-radius: 12px;
+}
+
+.hidden {
+  display: none;
+}
+
+/* Responsive tweaks */
+@media screen and (max-width: 768px) {
+  .nav-area,
+  .desktop-login {
+    display: none;
+  }
+
+  .right-actions {
+    display: flex;
+    margin-left: auto;
+  }
+
+  .mobile-right {
+    display: block;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+}
+
+
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 columns */
+  gap: 20px; /* space between items */
+  padding: 20px;
+}
+
+.product-card {
+  background: #f8f8f8;
+  padding: 15px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+/* Optional: make responsive for smaller screens */
+@media (max-width: 900px) {
+  .products-grid {
+    grid-template-columns: repeat(2, 1fr); /* 2 columns on tablet */
+  }
+}
+
+@media (max-width: 600px) {
+  .products-grid {
+    grid-template-columns: 1fr; /* 1 column on mobile */
+  }
+}

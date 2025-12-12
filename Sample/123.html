@@ -1,0 +1,218 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>3D Happy Birthday — Cake & Balloons (Three.js)</title>
+<style>
+  html,body{height:100%;margin:0;background:linear-gradient(180deg,#0f172a 0%,#0b1220 60%,#0f0b1a 100%);overflow:hidden;font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial}
+  #container{width:100%;height:100%;display:block}
+  .label{position:absolute;left:50%;transform:translateX(-50%);top:20px;color:#fff;mix-blend-mode:screen;text-align:center;pointer-events:none}
+  .label h1{margin:0;font-size:clamp(28px,4vw,56px);letter-spacing:2px;text-shadow:0 8px 30px rgba(0,0,0,0.6)}
+  .credit{position:absolute;right:12px;bottom:12px;color:#bbb;font-size:12px}
+  .errorOverlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.75);color:#fff;padding:20px;z-index:9999;text-align:center}
+  .errorOverlay a{color:#9bf;text-decoration:underline}
+</style>
+</head>
+<body>
+<div id="container" aria-label="ThreeJS container"></div>
+<div class="label"><h1>🎉 Happy Birthday 🎉</h1></div>
+<div class="credit">Click to play music • Drag to orbit • Scroll to zoom</div><!--
+  NOTE: Many sandboxed environments cannot resolve bare module specifiers like `import 'three'`.
+  This version uses the UMD builds (non-module) via CDN script tags so the page can run in
+  plain browsers without a bundler. If you're running this from a local file (file://),
+  some browsers block cross-origin module loading — use a simple local server (e.g. `npx http-server`)
+  if you prefer the ES module variant.
+--><script src="https://unpkg.com/three@0.158.0/build/three.min.js"></script><script src="https://unpkg.com/three@0.158.0/examples/js/controls/OrbitControls.js"></script><script>
+(function(){
+  const container = document.getElementById('container');
+
+  if(typeof THREE === 'undefined'){
+    const overlay = document.createElement('div');
+    overlay.className = 'errorOverlay';
+    overlay.innerHTML = '<div><h2>Three.js failed to load</h2>'+
+      '<p>Your environment blocked the external scripts. Try opening this file served from a local HTTP server, or allow external scripts.</p>'+
+      '<p>To run locally: <code>npx http-server</code> (or any static server) then open <strong>http://localhost:8080/</strong>.</p>'+
+      '<p>Or ask me for an ES-module version that uses relative paths if you plan to host three.js locally.</p></div>';
+    document.body.appendChild(overlay);
+    return;
+  }
+
+  // --- Three.js scene setup (UMD global THREE) ---
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x071025);
+
+  const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 2000);
+  camera.position.set(0, 8, 18);
+
+  const renderer = new THREE.WebGLRenderer({antialias:true});
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  container.appendChild(renderer.domElement);
+
+  // Controls (safe construction whether OrbitControls attached to THREE or global)
+  let controls;
+  if(typeof THREE.OrbitControls === 'function'){
+    controls = new THREE.OrbitControls(camera, renderer.domElement);
+  } else if(typeof OrbitControls === 'function'){
+    controls = new OrbitControls(camera, renderer.domElement);
+  } else {
+    // fallback dummy controls
+    controls = {update: function(){}, enableDamping:false, autoRotate:false};
+    console.warn('OrbitControls not available — continuing without orbit controls.');
+  }
+  if(controls){ controls.enableDamping = true; controls.dampingFactor = 0.08; controls.autoRotate = true; controls.autoRotateSpeed = 0.6; controls.maxPolarAngle = Math.PI/2.1; }
+
+  // Lights
+  const hemi = new THREE.HemisphereLight(0xfff8e8, 0x080820, 0.6);
+  scene.add(hemi);
+  const dir = new THREE.DirectionalLight(0xffffff, 0.9);
+  dir.position.set(5, 10, 5);
+  dir.castShadow = true;
+  dir.shadow.mapSize.set(2048,2048);
+  dir.shadow.camera.left = -12; dir.shadow.camera.right = 12; dir.shadow.camera.top = 12; dir.shadow.camera.bottom = -12;
+  scene.add(dir);
+
+  // Ground
+  const groundGeo = new THREE.PlaneGeometry(200,200);
+  const groundMat = new THREE.ShadowMaterial({opacity:0.55});
+  const ground = new THREE.Mesh(groundGeo, groundMat);
+  ground.rotation.x = -Math.PI/2; ground.position.y = -0.01; ground.receiveShadow = true; scene.add(ground);
+
+  // Cake builder
+  function createCake(){
+    const cakeGroup = new THREE.Group();
+    const layerHeights = [1.6, 1.2, 1.0];
+    const radii = [3.6, 2.6, 1.6];
+    const colors = [0xff9aa2, 0xffc3a0, 0xfff1a8];
+    let y = 0;
+    for(let i=0;i<layerHeights.length;i++){
+      const geo = new THREE.CylinderGeometry(radii[i], radii[i], layerHeights[i], 64);
+      const mat = new THREE.MeshStandardMaterial({color:colors[i], metalness:0.1, roughness:0.45});
+      const mesh = new THREE.Mesh(geo, mat);
+      mesh.castShadow = true; mesh.receiveShadow = true;
+      mesh.position.y = y + layerHeights[i]/2;
+      cakeGroup.add(mesh);
+
+      const icingGeo = new THREE.TorusGeometry(Math.max(0.1, radii[i]-0.02), 0.18, 16, 100);
+      const icingMat = new THREE.MeshStandardMaterial({color:0xffffff, metalness:0.0, roughness:0.7});
+      const icing = new THREE.Mesh(icingGeo, icingMat);
+      icing.rotation.x = Math.PI/2; icing.position.y = mesh.position.y + layerHeights[i]/2 - 0.02;
+      icing.castShadow = true; icing.receiveShadow = true;
+      cakeGroup.add(icing);
+
+      y += layerHeights[i];
+    }
+
+    const plateGeo = new THREE.CylinderGeometry(6.5, 6.5, 0.4, 64);
+    const plateMat = new THREE.MeshStandardMaterial({color:0xeeeeee, metalness:0.3, roughness:0.4});
+    const plate = new THREE.Mesh(plateGeo, plateMat);
+    plate.position.y = 0.18; plate.receiveShadow = true; plate.castShadow = false;
+    cakeGroup.add(plate);
+    cakeGroup.position.y = 0.2;
+    return cakeGroup;
+  }
+
+  const cake = createCake(); scene.add(cake);
+
+  // Candles + flames
+  const candleGroup = new THREE.Group();
+  const flameMeshes = [];
+  const flameLights = [];
+  for(let i=0;i<6;i++){
+    const angle = (i/6)*Math.PI*2;
+    const r = 1.2 + Math.random()*0.8;
+    const x = Math.cos(angle)*r; const z = Math.sin(angle)*r;
+    const cyl = new THREE.Mesh(new THREE.CylinderGeometry(0.08,0.08,0.9,16), new THREE.MeshStandardMaterial({color:0xffffff, metalness:0.0, roughness:0.6}));
+    cyl.position.set(x, 3.6, z); cyl.castShadow = true; candleGroup.add(cyl);
+
+    const flame = new THREE.Mesh(new THREE.SphereGeometry(0.18,12,12), new THREE.MeshBasicMaterial({color:0xffb84d}));
+    flame.position.set(x, 4.1, z); candleGroup.add(flame); flameMeshes.push(flame);
+
+    const p = new THREE.PointLight(0xffaa66, 0.9, 6, 2);
+    p.position.copy(flame.position); p.castShadow = false; candleGroup.add(p); flameLights.push(p);
+  }
+  scene.add(candleGroup);
+
+  // Balloons
+  const balloons = new THREE.Group();
+  function makeBalloon(color){
+    const geo = new THREE.SphereGeometry(0.9, 32, 32);
+    geo.applyMatrix4(new THREE.Matrix4().makeScale(1,1.25,1));
+    const mat = new THREE.MeshStandardMaterial({color: new THREE.Color(color), metalness:0.2, roughness:0.3, emissive:0x000000});
+    const mesh = new THREE.Mesh(geo, mat); mesh.castShadow = true;
+    const points = [new THREE.Vector3(0,-1.2,0), new THREE.Vector3(0,-3.2,0)];
+    const line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), new THREE.LineBasicMaterial({color:0x222222}));
+    const group = new THREE.Group(); group.add(mesh); group.add(line); return group;
+  }
+  const colors = [0xff4d6d,0xffb86b,0x7ae7c7,0x8aa1ff,0xd7b3ff,0xffe28a];
+  for(let i=0;i<14;i++){
+    const b = makeBalloon(colors[i%colors.length]);
+    b.position.set((Math.random()-0.5)*12, Math.random()*6+1, (Math.random()-0.5)*6);
+    b.userData = {vel: 0.01 + Math.random()*0.02, phase: Math.random()*Math.PI*2, rot: Math.random()*0.02};
+    balloons.add(b);
+  }
+  scene.add(balloons);
+
+  // Confetti
+  const confetti = new THREE.Group();
+  const confGeo = new THREE.PlaneGeometry(0.12, 0.18);
+  for(let i=0;i<120;i++){
+    const m = new THREE.Mesh(confGeo, new THREE.MeshStandardMaterial({color: new THREE.Color().setHSL(Math.random(),0.8,0.6), side: THREE.DoubleSide}));
+    m.position.set((Math.random()-0.5)*20, Math.random()*10+1, (Math.random()-0.5)*10);
+    m.rotation.set(Math.random()*Math.PI, Math.random()*Math.PI, Math.random()*Math.PI);
+    m.userData = {rotSpeed: (Math.random()-0.5)*0.06, fall: 0.004+Math.random()*0.01};
+    confetti.add(m);
+  }
+  scene.add(confetti);
+
+  // Audio (requires gesture)
+  let audio, audioPlaying = false;
+  function initAudio(){
+    try{
+      audio = new Audio('https://cdn.pixabay.com/download/audio/2021/08/04/audio_1a2f4f7ab9.mp3?filename=birthday-6000.mp3');
+      audio.loop = true; audio.volume = 0.6;
+      document.body.addEventListener('click', ()=>{ if(!audioPlaying){ audio.play().catch(()=>{}); audioPlaying=true; } }, {once:false});
+    }catch(e){ console.warn('Audio init failed', e); }
+  }
+  initAudio();
+
+  // Resize
+  function onWindowResize(){ camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); }
+  window.addEventListener('resize', onWindowResize);
+
+  // Animate
+  const clock = new THREE.Clock();
+  function animate(){
+    requestAnimationFrame(animate);
+    const t = clock.getElapsedTime();
+
+    balloons.children.forEach(b=>{
+      b.position.y += b.userData.vel;
+      b.position.x += Math.sin(t*0.8 + b.userData.phase)*0.0025;
+      b.rotation.y += b.userData.rot;
+      if(b.position.y > 20){ b.position.y = -2; b.position.x = (Math.random()-0.5)*12; }
+    });
+
+    confetti.children.forEach(c=>{
+      c.position.y -= c.userData.fall; c.rotation.x += c.userData.rotSpeed; c.rotation.y += c.userData.rotSpeed*0.5;
+      if(c.position.y < -2) c.position.y = Math.random()*12 + 8;
+    });
+
+    for(let i=0;i<flameLights.length;i++){
+      const light = flameLights[i];
+      if(light) light.intensity = 0.7 + Math.sin(t*10 + i)*0.25*Math.random();
+    }
+    for(let i=0;i<flameMeshes.length;i++){
+      const m = flameMeshes[i]; if(m) m.scale.setScalar(0.9 + Math.sin(t*8 + i)*0.12);
+    }
+
+    if(controls && typeof controls.update === 'function') controls.update();
+    renderer.render(scene, camera);
+  }
+  animate();
+
+})();
+</script></body>
+</html>

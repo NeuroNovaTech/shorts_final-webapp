@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animated Gradient Text</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #222;
+            font-family: Arial;
+        }
+        h1 {
+            font-size: 5rem;
+            background: linear-gradient(45deg, #ff9a9e, #fad0c4, #a18cd1, #fbc2eb);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: gradient 4s ease infinite;
+        }
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+    </style>
+</head>
+<body>
+    <h1>GRADIENT TEXT</h1>
+</body>
+</html>
+<!--CSSAnimations
+
+📅 Day 2: Animated Gradient Text (CSS Only)
+Title: "Gradient Text Animation That Will BLOW Your Mind! 🌈 #CSS"
+📌 Description:
+"Make your text POP with this smooth gradient animation! No JavaScript needed—pure CSS magic. Drop a ❤️ if you love CSS tricks! #Frontend #CSSMagic"
+
+🏷️ Tags:
+#GradientText #CSSAnimations #WebDesign #Frontend #NoJS #CSSOnly #UIEffects-->

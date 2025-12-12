@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>WASM vs JS Fibonacci Speed Test</title>
+  <style>
+    body {
+      background: #1a1a2e;
+      color: #eaeaea;
+      font-family: ’Segoe UI’, Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    #runTest {
+      padding: 10px 20px;
+      font-size: 1.1rem;
+      border: none;
+      background-color: #4a00e0;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+    }
+    #runTest:hover {
+      background-color: #6a00ff;
+      transform: scale(1.05);
+    }
+    #results {
+      margin-top: 20px;
+      font-size: 1.2rem;
+      background: #0f0f25;
+      padding: 15px 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+      min-width: 300px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <button id="runTest">Run Fibonacci Test</button>
+  <div id="results">Click the button to compare performance.</div>
+
+  <script>
+    // Ensure the importObject has the needed environment
+    const importObject = {
+      env: {
+        // Optional: if wasm has memory or needs any env functions, add them
+      }
+    };
+
+    let wasmInstance;
+
+    fetch('fibonacci.wasm')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`Failed to fetch wasm: ${response.statusText}`);
+        }
+        return response.arrayBuffer();
+      })
+      .then(bytes => WebAssembly.instantiate(bytes, importObject))
+      .then(obj => {
+        wasmInstance = obj.instance;
+        // the exported function name must match what you exported from C++
+        // for example, if you used extern "C" and EXPORT, might be "fib" or similar.
+        document.getElementById('results').innerHTML = 'WASM module loaded. Press the button to test.';
+      })
+      .catch(err => {
+        document.getElementById('results').innerHTML = 'Error loading WASM module: ' + err;
+      });
+
+    document.getElementById('runTest').addEventListener('click', () => {
+      if (!wasmInstance) {
+        document.getElementById('results').innerHTML = 'WASM not loaded yet!';
+        return;
+      }
+
+      const n = 40; // Fibonacci input
+
+      const jsStart = performance.now();
+      function jsFib(n) {
+        return n <= 1 ? n : jsFib(n - 1) + jsFib(n - 2);
+      }
+      jsFib(n);
+      const jsTime = performance.now() - jsStart;
+
+      const wasmStart = performance.now();
+      // Replace "fib" below with the actual exported name in your WASM
+      const wasmResult = wasmInstance.exports.fib(n);
+      const wasmTime = performance.now() - wasmStart;
+
+      document.getElementById('results').innerHTML = `
+        JavaScript result: ${jsTime.toFixed(2)} ms<br>
+        WebAssembly result: ${wasmTime.toFixed(2)} ms<br>
+        ✓ wasm returned: ${wasmResult}<br>
+        ⚡ WASM is ${(jsTime / wasmTime).toFixed(1)}× faster!
+      `;
+    });
+  </script>
+</body>
+</html>
+
+<!--🔥 Day 18: WebAssembly Speed Test (Fibonacci in C++)
+📌 Hook: "JavaScript vs WebAssembly speed test - the results will shock you! ⚡ #WebAssembly #Cpp"-->
+

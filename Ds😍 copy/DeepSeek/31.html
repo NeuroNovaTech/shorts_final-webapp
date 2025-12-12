@@ -1,0 +1,28 @@
+<div>
+  <button id="connectWallet">Connect Wallet</button>
+  <div id="walletInfo"></div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/web3@1.8.0/dist/web3.min.js"></script>
+<script>
+  document.getElementById('connectWallet').addEventListener('click', async () => {
+    if (window.ethereum) {
+      try {
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        const web3 = new Web3(window.ethereum);
+        const balance = await web3.eth.getBalance(accounts[0]);
+        
+        document.getElementById('walletInfo').innerHTML = `
+          <p>Connected Wallet: ${accounts[0].slice(0, 6)}...${accounts[0].slice(-4)}</p>
+          <p>Balance: ${web3.utils.fromWei(balance, 'ether')} ETH</p>
+        `;
+      } catch (error) {
+        console.error(error);
+      }
+    } else {
+      alert('Please install MetaMask!');
+    }
+  });
+</script>
+<!--🔥 Day 25: Blockchain Demo (Web3.js + Ethereum)
+📌 Hook: "Connect to Ethereum blockchain in 10 lines of code! 💰 #Web3 #Blockchain"-->
+

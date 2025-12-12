@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      margin: 0;
+      background: #000000;
+      overflow: hidden;
+    }
+    .gallery {
+      display: flex;
+      height: 100vh;
+      animation: scroll 20s linear infinite;
+    }
+    .image {
+      min-width: 300px;
+      height: 300px;
+      background-size: cover;
+      background-position: center;
+    }
+    @keyframes scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+  </style>
+</head>
+<body>
+  <div class="gallery" id="gallery"></div>
+  <script>
+    const gallery = document.getElementById('gallery');
+    const images = [
+      '10.jpg',
+      '11.jpg',
+      '12.jpg',
+      '13.jpg'
+    ]; 
+    // Double the array for seamless looping
+    [...images, ...images].forEach(img => {
+      const div = document.createElement('div');
+      div.className = 'image';
+      div.style.backgroundImage = `url(${img})`;
+      gallery.appendChild(div);
+    });
+  </script>
+</body>
+</html>
+<!--Day 20: Infinite Scrolling Gallery
+(Trending: Social Media Feeds)
+
+"INFINITE scrolling like Instagram! 📱 (CSS Animation Hack)"
+

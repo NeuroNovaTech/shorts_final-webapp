@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      margin: 0;
+      background: #000;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      font-family: sans-serif;
+    
+    }
+    .progress-container {
+      display: flex;
+      gap: 5px;
+      padding: 10px;
+    }
+
+    .progress-bar {
+      height: 3px;
+      background: rgba(255, 255, 255, 0.3);
+      flex-grow: 1;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: white;
+      transition: width 0.1s linear;
+    }
+
+    .content {
+      flex-grow: 1;
+      background-size: cover;
+      background-position: center;
+      transition: background-image 0.5s ease;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="progress-container">
+    <div class="progress-bar"><div class="progress-fill" id="progress1"></div></div>
+    <div class="progress-bar"><div class="progress-fill" id="progress2"></div></div>
+    <div class="progress-bar"><div class="progress-fill" id="progress3"></div></div>
+  </div>
+
+  <div class="content" id="content"></div>
+
+  <script>
+    const images = [
+      '6a.jpg',
+      '7a.jpg',
+      '8a.jpg',
+    ];
+
+    const bars = document.querySelectorAll('.progress-fill');
+    const content = document.getElementById('content');
+
+    let currentBar = 0;
+
+    function animateBars() {
+      if (currentBar < bars.length) {
+        // Change background image
+        content.style.backgroundImage = `url('${images[currentBar]}')`;
+
+        // Animate fill
+        let fill = bars[currentBar];
+        fill.style.width = '0%';
+
+        let width = 0;
+        const interval = setInterval(() => {
+          width += 1;
+          fill.style.width = `${width}%`;
+
+          if (width >= 100) {
+            clearInterval(interval);
+            currentBar++;
+            animateBars(); // Next bar
+          }
+        }, 50); // 100% in ~2 seconds
+      } else {
+        // Optional: Restart from beginning
+        setTimeout(() => {
+          bars.forEach(bar => bar.style.width = '0%');
+          currentBar = 0;
+          animateBars();
+        }, 1000);
+      }
+    }
+
+    // Start after slight delay
+    setTimeout(animateBars, 500);
+  </script>
+
+</body>
+</html>
+
+<!--Day 15: TikTok-Style Progress Bar
+(Trending: Social Media UI Clones)
+
+"Steal TikTok’s progress bar in 30 SECONDS! ⏳"
+
